@@ -20,7 +20,7 @@ export default class WelcomePage extends Component {
                     style={styles.newUserButton}
                     onPress={() => { this.props.navigation.navigate("NewUser") }}
                 >
-                    <Text>New User Here</Text>
+                    <Text>New User? Press Here</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -36,7 +36,7 @@ const styles = {
     newUserButton: {
         position: "absolute",
         top: HEIGHT - 200,
-        left: HALFWIDTH,
+        left: HALFWIDTH-100,
         width: WIDTH - 200,
         height: 40,
         backgroundColor: '#a79494',
