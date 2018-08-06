@@ -1,21 +1,25 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
+import WelcomePage from './src/Components/WelcomPage';
+
+const SwitchNav = createSwitchNavigator(
+  {
+    Welcome: WelcomePage,
+  }
+)
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
+      <View style={styles.containerStyle}>
+        <SwitchNav />
       </View>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
+const styles = {
+  containerStyle: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  }
+}
