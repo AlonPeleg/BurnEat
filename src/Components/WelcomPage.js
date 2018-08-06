@@ -2,16 +2,23 @@ import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
 
 export default class WelcomePage extends Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+
+        };
+    };
 
     render() {
         return (
             <View>
                 <TouchableOpacity style={{ width: WIDTH, height: HEIGHT }}
-                    onPress={() => { console.warn("screen pressed") }}
+                    onPress={() => {this.props.navigation.navigate("Login") }}
                 />
                 <TouchableOpacity
                     style={styles.newUserButton}
-                    onPress={() => { console.warn("New User selected") }}
+                    onPress={() => { this.props.navigation.navigate("NewUser") }}
                 >
                     <Text>New User Here</Text>
                 </TouchableOpacity>
@@ -22,14 +29,16 @@ export default class WelcomePage extends Component {
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
+const HALFWIDTH = Dimensions.get('window').width / 2;
+const HALFHEIGHT = Dimensions.get('window').height / 2;
 
 const styles = {
     newUserButton: {
         position: "absolute",
-        top: 100,
-        left: WIDTH / 2,
-        width: 50,
-        height: 50,
+        top: HEIGHT - 200,
+        left: HALFWIDTH,
+        width: WIDTH - 200,
+        height: 40,
         backgroundColor: '#a79494',
     }
-}
+};
