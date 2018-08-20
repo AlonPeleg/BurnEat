@@ -14,8 +14,10 @@ export default class WelcomePage extends Component {
         return (
             <View>
                 <TouchableOpacity style={{ width: WIDTH, height: HEIGHT }}
-                    onPress={() => {this.props.navigation.navigate("Login") }}
-                />
+                    onPress={() => { this.props.navigation.navigate("Login") }}
+                >
+                <Text style={{ textAlign: "center" }}>Touch anywhere if you already a member</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.newUserButton}
                     onPress={() => { this.props.navigation.navigate("NewUser") }}
@@ -36,7 +38,7 @@ const styles = {
     newUserButton: {
         position: "absolute",
         top: HEIGHT - 200,
-        left: HALFWIDTH-100,
+        left: HALFWIDTH - 100,
         width: WIDTH - 200,
         height: 40,
         backgroundColor: '#a79494',
