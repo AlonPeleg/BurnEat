@@ -63,7 +63,7 @@ export default class NewUserRegister extends Component {
                 sex: this.state.sex
             })
         }).then(() => console.log('it did something'));
-        this.props.navigation.navigate("home");
+        this.props.navigation.navigate("Login");
     }
     render() {
         return (
