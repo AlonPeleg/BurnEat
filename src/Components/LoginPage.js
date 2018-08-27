@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Button, Dimensions } from 'react-native';
+import BackgroundImage2 from "./BackgroundImage2";
+import {
+  Container,
+  Header,
+  Content,
+  Form,
+  Item,
+  Input,
+  Label
+} from "native-base";
 
 export default class LoginPage extends Component {
     constructor(props) {
@@ -11,39 +21,48 @@ export default class LoginPage extends Component {
         };
     };
     checkLogin = () => {
+    //if(השם משתמש והסיסמא נמצאים בדאטה בייס)
         this.props.navigation.navigate("home", {
             myEmail: this.state.emailInput,
+            //else()
+        //{
+          //console.warn(offer drugs)  
+        //}
         });
     }
     render() {
         return (
-            <View>
-                <Text>Welcome Back!</Text>
-                <Text>Email:</Text>
-                <TextInput
-                    onChangeText={(e) => { this.setState({ emailInput: e }) }}
-                    placeholder="Enter Email"
-                    style={{ width: 200 }}
-                />
-                <Text>Password: </Text>
-                <TextInput
-                    onChangeText={(e) => { this.setState({ passInput: e }) }}
-                    placeholder="Enter Password"
-                    style={{ width: 200 }}
-                />
-                <TouchableOpacity
-                    style={{ position: 'absolute', top: HEIGHT - 100, left: 100, width: 100, height: 50, backgroundColor: '#ddd' }}
-                    onPress={this.checkLogin}
-                >
-                    <Text style={{ textAlign: 'center' }}>Continue</Text>
-                </TouchableOpacity>
-            </View>
-        )
+            <Container>
+                <BackgroundImage2 />
+                <Content>
+                    <Form>
+                        <Item fixedLabel>
+                            <Label style={{color:"white"}}>Email</Label>
+                            <Input style={{color:"white"}} />
+                        </Item>
+                        <Item fixedLabel last>
+                            <Label style={{ color: "white" }}>Password</Label>
+                            <Input style={{ color: "white" }} />
+                        </Item>
+                    </Form>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={this.checkLogin}
+                    >
+                        <Text> Login </Text>
+                    </TouchableOpacity>
+                </Content>
+            </Container>
+        );
     };
 }
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 const styles = {
-
+    button: {
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10
+    },
 };
