@@ -46,7 +46,24 @@ export default class NewUserRegister extends Component {
     }
 
     registerClicked = () => {
-        console.warn(this.state.name);
+        fetch('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertUser', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: this.state.name,
+                email: this.state.email,
+                pass: this.state.pass,
+                weight: this.state.weight,
+                height: this.state.height,
+                age: this.state.age,
+                level: this.state.level,
+                sex: this.state.sex
+            })
+        }).then(() => console.log('it did something'));
+        this.props.navigation.navigate("home");
     }
     render() {
         return (
@@ -66,24 +83,9 @@ export default class NewUserRegister extends Component {
                             <Input onChangeText={this.passChange} returnKeyType="next" />
                         </Item>
                         <Item floatingLabel>
-                            <Label>תאריך לידה</Label>
+                            <Label>גיל</Label>
                             <Input onChangeText={this.ageChange} returnKeyType="next" keyboardType="numeric" />
                         </Item>
-                        <DatePicker
-                            defaultDate={new Date(2018, 4, 4)}
-                            minimumDate={new Date(2018, 1, 1)}
-                            maximumDate={new Date(2018, 12, 31)}
-                            locale={"en"}
-                            timeZoneOffsetInMinutes={undefined}
-                            modalTransparent={false}
-                            animationType={"fade"}
-                            androidMode={"default"}
-                            placeHolderText="תאריך לידה"
-                            textStyle={{ color: "green" }}
-                            placeHolderTextStyle={{ color: "#d3d3d3" }}
-                            onDateChange={this.setDate}
-                        />
-
                         <Item floatingLabel>
                             <Label>גובה בס"מ</Label>
                             <Input onChangeText={this.heightChange} returnKeyType="next" keyboardType="numeric" />
