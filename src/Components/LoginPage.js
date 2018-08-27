@@ -38,6 +38,7 @@ export default class LoginPage extends Component {
             if (json !== null) {
                 await AsyncStorage.setItem("User", JSON.stringify(json));
                 this.props.navigation.navigate("home"); //JSON parse like in 3 rows up to use the JSON
+                               
             }
             else {
 
