@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, TouchableOpacity, Dimensions, AsyncStorage } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, AsyncStorage, Modal } from 'react-native';
 import BackgroundImage2 from "./BackgroundImage2";
 import {
     Container,
@@ -17,9 +17,11 @@ export default class LoginPage extends Component {
         super(props)
 
         this.state = {
-            emailInput: '',
-            passInput: '',
+            emailInput: null,
+            passInput: null,
             test: 'test1',
+            modalVisible: false,
+            errMsg: ''
         };
     };
     emailChange = (e) => {
@@ -29,22 +31,45 @@ export default class LoginPage extends Component {
         this.setState({ passInput: e });
     };
     checkLogin = async () => {
-        try {
-            const res = await axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/LoginVerify', {
-                email: this.state.emailInput,
-                pass: this.state.passInput
-            })
-            let json = JSON.parse(res.data.d)
-            if (json !== null) {
-                await AsyncStorage.setItem("User", JSON.stringify(json));
-                this.props.navigation.navigate("home"); //JSON parse like in 3 rows up to use the JSON
-                               
-            }
-            else {
+        if (this.state.emailInput == null) {
+            this.setState({ errMsg: 'אנא הכנס אימייל', modalVisible: true });
+            this.timeOut2 = setTimeout(() => {
+
+                this.setState({ modalVisible: false })
+
+            }, 1500);
+        }
+        else if (this.state.passInput == null) {
+            this.setState({ errMsg: 'אנא הכנס סיסמא', modalVisible: true });
+            this.timeOut2 = setTimeout(() => {
+
+                this.setState({ modalVisible: false })
+
+            }, 1500);
+        }
+        else {
+            try {
+                const res = await axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/LoginVerify', {
+                    email: this.state.emailInput,
+                    pass: this.state.passInput
+                })
+                let json = JSON.parse(res.data.d)
+                if (json !== null) {
+                    await AsyncStorage.setItem("User", JSON.stringify(json));
+                    this.props.navigation.navigate("home"); //JSON parse like in 3 rows up to use the JSON
+
+                }
+                else {
+                    this.setState({ errMsg: 'פרטים לא נכונים', modalVisible: true });
+                    this.timeOut2 = setTimeout(() => {
+
+                        this.setState({ modalVisible: false })
+
+                    }, 1500);
+                }
+            } catch (error) {
 
             }
-        } catch (error) {
-
         }
     }
     render() {
@@ -69,6 +94,21 @@ export default class LoginPage extends Component {
                         <Text> התחברות </Text>
                     </TouchableOpacity>
                 </Content>
+                <View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => null}
+                        style={styles.modalStyle}
+                    >
+                        <View style={{ top: (HEIGHT / 2) - 75, backgroundColor: "rgba(238,206,206,0.6)", height: 100 }} >
+                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 25 }}>
+                                {this.state.errMsg}
+                            </Text>
+                        </View>
+                    </Modal>
+                </View>
             </Container>
         );
     };
@@ -82,4 +122,10 @@ const styles = {
         backgroundColor: '#DDDDDD',
         padding: 10
     },
+    modalStyle: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        alignSelf: "center",
+    }
 };

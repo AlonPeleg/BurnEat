@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text } from 'react-native';
+import { View, TextInput, Text, Modal, Dimensions } from 'react-native';
 import { Container, Header, Content, Form, Item, Picker, Label, Input, DatePicker, Button } from 'native-base';
+import axios from 'axios';
 
-var d = new Date();
-var n = d.getFullYear();
+const agePick = ["גיל", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"];
+const listAge = agePick.map((ageP, i) =>
+    <Picker.Item label={ageP} value={ageP} key={i} />
+);
 
 export default class NewUserRegister extends Component {
     constructor(props) {
@@ -18,6 +21,8 @@ export default class NewUserRegister extends Component {
             weight: undefined,
             sex: undefined,
             level: undefined,
+            modalVisible: false,
+            errMsg: '',
         };
     };
     nameChange = (e) => {
@@ -44,15 +49,9 @@ export default class NewUserRegister extends Component {
     levelChange = (e) => {
         this.setState({ level: e });
     }
-
-    registerClicked = () => {
-        fetch('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertUser', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
+    registerClicked = async () => {
+        try {
+            const res = await axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertUser', {
                 name: this.state.name,
                 email: this.state.email,
                 pass: this.state.pass,
@@ -60,10 +59,23 @@ export default class NewUserRegister extends Component {
                 height: this.state.height,
                 age: this.state.age,
                 level: this.state.level,
-                sex: this.state.sex
+                sex: this.state.sex,
             })
-        }).then(() => console.log('it did something'));
-        this.props.navigation.navigate("Login");
+            if (res.data.d !== null) {
+                this.props.navigation.navigate("Login");
+            }
+            else {
+                this.setState({ errMsg: 'משתמש קיים', modalVisible: true })
+                this.timeOut = setTimeout(() => {
+
+                    this.setState({ modalVisible: false })
+
+                }, 1500);
+            }
+        } catch (error) {
+            console.warn("Catch Error on Register.");
+        }
+
     }
     render() {
         return (
@@ -82,9 +94,16 @@ export default class NewUserRegister extends Component {
                             <Label>סיסמא</Label>
                             <Input onChangeText={this.passChange} returnKeyType="next" />
                         </Item>
-                        <Item floatingLabel>
-                            <Label>גיל</Label>
-                            <Input onChangeText={this.ageChange} returnKeyType="next" keyboardType="numeric" />
+                        <Item picker>
+                            <Picker
+                                prompt="הגיל שלי"
+                                style={{ width: undefined, marginTop: 5, marginBottom: 5 }}
+                                selectedValue={this.state.age}
+                                onValueChange={this.ageChange}
+                                style={{ marginLeft: "70%" }}
+                            >
+                                {listAge}
+                            </Picker>
                         </Item>
                         <Item floatingLabel>
                             <Label>גובה בס"מ</Label>
@@ -97,7 +116,7 @@ export default class NewUserRegister extends Component {
                         <View style={{ marginTop: 45 }}>
                             <Item picker>
                                 <Picker
-                                    mode="dropdown"
+                                    prompt="מין"
                                     style={{ width: undefined }}
                                     placeholder="Select your gender"
                                     placeholderStyle={{ color: "#bfc6ea" }}
@@ -113,7 +132,7 @@ export default class NewUserRegister extends Component {
                             <View style={{ marginTop: 30 }}>
                                 <Item picker>
                                     <Picker
-                                        mode="dropdown"
+                                        prompt="רמת אימון"
                                         style={{ width: undefined }}
                                         placeholder="Select your gender"
                                         placeholderStyle={{ color: "#bfc6ea" }}
@@ -133,6 +152,21 @@ export default class NewUserRegister extends Component {
                         </View>
                     </Form>
                 </Content>
+                <View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => null}
+                        style={styles.modalStyle}
+                    >
+                        <View style={{ top: (HEIGHT / 2) - 75, backgroundColor: "rgba(238,206,206,0.6)", height: 100 }} >
+                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 25 }}>
+                                {this.state.errMsg}
+                            </Text>
+                        </View>
+                    </Modal>
+                </View>
                 <Button block success onPress={this.registerClicked}>
                     <Text style={{ color: "white" }}>הרשם</Text>
                 </Button>
@@ -140,4 +174,14 @@ export default class NewUserRegister extends Component {
         )
     };
 
+}
+const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
+const styles = {
+    modalStyle: {
+        position: "absolute",
+        width: "100%",
+        height: "100%",
+        alignSelf: "center",
+    },
 }
