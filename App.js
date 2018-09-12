@@ -7,18 +7,25 @@ import LoginPage from './src/Components/LoginPage';
 import NewUserRegister from './src/Components/NewUserRegister';
 import HomePage from './src/Components/HomePage';
 import StepCounter from './src/Components/StepCounter';
+import FoodMain from './src/Components/FoodMain';
+import OpeningPage from './src/Components/OpeningPage';
+import ProfilePage from './src/Components/ProfilePage';
 
 const StackNav = createStackNavigator(
   {
     home:HomePage,
     steps:StepCounter,
+    
   }
 )
 const SwitchNav = createSwitchNavigator(
   {
+    open:OpeningPage,
     Welcome: WelcomePage,
     Login: LoginPage,
     NewUser: NewUserRegister,
+    foodMainPage:FoodMain,
+    profile:ProfilePage,
     HomePageEnter:StackNav
   }
 )

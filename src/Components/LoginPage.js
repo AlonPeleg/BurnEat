@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity, Dimensions, AsyncStorage, Modal } from 'r
 import BackgroundImage2 from "./BackgroundImage2";
 import {
     Container,
-    Header,
     Content,
     Form,
     Item,
     Input,
-    Label
+    Label,
+    Toast
 } from "native-base";
 import axios from 'axios';
 
@@ -54,10 +54,10 @@ export default class LoginPage extends Component {
                     pass: this.state.passInput
                 })
                 let json = JSON.parse(res.data.d)
-                if (json !== null) {
-                    await AsyncStorage.setItem("User", JSON.stringify(json));
-                    this.props.navigation.navigate("home"); //JSON parse like in 3 rows up to use the JSON
+                if (json !== 0) {
 
+                    let userStr = JSON.stringify(json);
+                    AsyncStorage.setItem('user', userStr).then(() => { this.props.navigation.navigate("home"); });
                 }
                 else {
                     this.setState({ errMsg: 'פרטים לא נכונים', modalVisible: true });

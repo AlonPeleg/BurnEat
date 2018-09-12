@@ -5,52 +5,63 @@ import {
   TouchableOpacity,
   Dimensions,
   Image,
-  StyleSheet
+  AsyncStorage,
 } from "react-native";
 import BackgroundImage2 from "./BackgroundImage2";
 
 export default class HomePage extends Component {
 
-
   constructor(props) {
     super(props);
 
-    this.state = {};
+    this.state = {
+      user: ''
+    };
   }
   static navigationOptions = { header: null }
-
-  run = () => {
+  goFood = () => {
+    this.props.navigation.navigate("foodMainPage");
+  }
+  goRun = () => {
     this.props.navigation.navigate("steps");
+  }
+  logOut = () => {
+    AsyncStorage.clear().then((v) => this.props.navigation.navigate("Welcome"));
+  }
+  goToProfile = async () => {
+    await AsyncStorage.getItem("user").then((v) => this.props.navigation.navigate("profile", { user: v }))
   }
   render() {
     return (
-      <View>
-        <TouchableOpacity onPress={() => { this.props.navigation.navigate("Welcome");}} >
-          <Image
-            style={styles.imgb}
-            source={require("../Images/bw.png")}
-          />
-        </TouchableOpacity>
-        <View style={{}}>
-          <TouchableOpacity onPress={this.workoutz}>
+      <View style={{ flex: 1, flexDirection: 'column' }}>
+        <View style={{ flexDirection: 'row' }}>
+          <TouchableOpacity onPress={this.goToProfile} style={styles.logOutProfileBtns} >
+            <Text>פרופיל</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.logOut} style={styles.logOutProfileBtns} >
+            <Text>התנתק</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <TouchableOpacity onPress={this.workOut}>
             <Image
-              style={styles.imgw}
+              style={styles.imageSize}
               source={require("../Images/gym-workout.jpg")}
             />
           </TouchableOpacity>
+          <TouchableOpacity onPress={this.goFood}>
+            <Image
+              style={styles.imageSize}
+              source={require("../Images/dark-mood.jpg")}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.goRun}>
+            <Image
+              style={styles.imageSize}
+              source={require("../Images/sonic.jpg")}
+            />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={this.foodz}>
-          <Image
-            style={styles.imgf}
-            source={require("../Images/dark-mood.jpg")}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={this.run}>
-          <Image
-            style={styles.imgs}
-            source={require("../Images/sonic.jpg")}
-          />
-        </TouchableOpacity>
       </View>
     );
   }
@@ -59,21 +70,17 @@ export default class HomePage extends Component {
 const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
-const styles = StyleSheet.create({
-  imgw: {
+const styles = {
+  imageSize: {
     width: WIDTH,
-    height: (HEIGHT / 3 - 5),
+    height: (HEIGHT / 3) - 20,
   },
-  imgf: {
-    width: WIDTH,
-    height: HEIGHT / 3,
+  logOutProfileBtns: {
+    width: WIDTH / 2,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#DDD",
   },
-  imgs: {
-    width: WIDTH,
-    height: HEIGHT / 3 + 5,
-  },
-  imgb: {
-    width: WIDTH,
-    height: 60
-  }
-});
+
+}
