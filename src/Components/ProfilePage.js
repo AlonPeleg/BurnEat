@@ -82,6 +82,7 @@ export default class ProfilePage extends Component {
                     onRequestClose={() => null}
                     style={{ position: "absoulute", height: HEIGHT, width: WIDTH }}
                 >
+                    <Header />
                     <Content padder>
                         <Card>
                             <CardItem header bordered>
@@ -114,12 +115,20 @@ export default class ProfilePage extends Component {
                                 </Text>
                             </CardItem>
                         </Card>
-                        <TouchableOpacity
-                            onPress={() => { this.setState({ modalVisible: false }) }}>
-                            <View>
-                                <Text>close</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <View style={{flex:1,flexDirection:'row',justifyContent: 'space-between',}}>
+                            <TouchableOpacity
+                                onPress={() => { this.setState({ modalVisible: false }) }}>
+                                <View style={{ backgroundColor: "#DDD", height: 50,width:(WIDTH/2)-50 ,justifyContent:'center'}}>
+                                    <Text style={{textAlign:'center'}}>close</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => { this.setState({ modalVisible: false }) }}>
+                                <View style={{ backgroundColor: "#DDD",  height: 50,width:(WIDTH/2)-50,justifyContent:'center' }}>
+                                    <Text style={{textAlign:'center'}}>update</Text>
+                                </View>
+                            </TouchableOpacity>
+                        </View>
                     </Content>
                 </Modal>
             </Container>
