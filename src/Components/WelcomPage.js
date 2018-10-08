@@ -1,14 +1,23 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, TouchableOpacity, Dimensions,StatusBar } from 'react-native'
 import BackgroundImage from "./BackgroundImage";
+
+
 export default class WelcomePage extends Component {
+  
     constructor(props) {
         super(props)
-
+        
         this.state = {
 
         };
+      
+      
     };
+
+    componentDidMount(){
+        StatusBar.setHidden(true);
+      }
 
     render() {
         return (
