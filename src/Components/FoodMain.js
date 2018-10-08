@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Modal,StatusBar } from 'react-native';
 import axios from 'axios';
 
 
@@ -8,6 +8,9 @@ var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/
 
 
 export default class FoodMain extends Component {
+    componentDidMount(){
+        StatusBar.setHidden(true);
+    }
     constructor(props) {
         super(props)
 
