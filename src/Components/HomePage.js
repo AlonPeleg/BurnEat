@@ -30,7 +30,7 @@ export default class HomePage extends Component {
   goToProfile = async () => {
     await AsyncStorage.getItem("user").then((v) =>{ 
       console.warn(v);
-      this.props.navigation.navigate("profile", { user: v })
+      this.props.navigation.navigate("profile", { user: JSON.parse(v) })
     })
   }
   render() {

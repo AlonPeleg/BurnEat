@@ -13,14 +13,14 @@ export default class ProfilePage extends Component {
         super(props)
         I18nManager.forceRTL(true);
         this.state = {
-            mEmail: JSON.parse(this.props.navigation.state.params.user).Email,
-            mPass: JSON.parse(this.props.navigation.state.params.user).Password,
-            mName: JSON.parse(this.props.navigation.state.params.user).Name,
-            mAge: JSON.parse(this.props.navigation.state.params.user).Age,
-            mSex: JSON.parse(this.props.navigation.state.params.user).Sex,
-            mHeight: JSON.parse(this.props.navigation.state.params.user).Height,
-            mWeight: JSON.parse(this.props.navigation.state.params.user).Weight,
-            mLevel: JSON.parse(this.props.navigation.state.params.user).Level,
+            mEmail: this.props.navigation.state.params.user.Email,
+            mPass: this.props.navigation.state.params.user.Password,
+            mName: this.props.navigation.state.params.user.Name,
+            mAge: this.props.navigation.state.params.user.Age,
+            mSex: this.props.navigation.state.params.user.Sex,
+            mHeight: this.props.navigation.state.params.user.Height,
+            mWeight: this.props.navigation.state.params.user.Weight,
+            mLevel: this.props.navigation.state.params.user.Level,
             modalVisible: false,
         };
     };
@@ -45,20 +45,19 @@ export default class ProfilePage extends Component {
     lvlChange = (e) => {
         this.setState({ mLevel: e })
     }
-    updateInfo = () => {
+    updateInfo = async () => {
         const newUser = {
-            name: this.state.mName,
-            email: this.state.mEmail,
-            pass: this.state.mPass,
-            weight: this.state.mWeight,
-            height: this.state.mHeight,
-            age: this.state.mAge,
-            level: this.state.mLevel,
-            sex: this.state.mSex
+            Name: this.state.mName,
+            Email: this.state.mEmail,
+            Pass: this.state.mPass,
+            Weight: this.state.mWeight,
+            Height: this.state.mHeight,
+            Age: this.state.mAge,
+            Level: this.state.mLevel,
+            Sex: this.state.mSex
         };
-        axios.post("http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/Update_info", newUser).then(() => {
-            AsyncStorage.setItem("user", JSON.stringify(newUser));
-        })
+        axios.post("http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/Update_info", newUser);
+        await AsyncStorage.setItem("user", JSON.stringify(newUser));
         this.setState({ modalVisible: false })
     }
     render() {
