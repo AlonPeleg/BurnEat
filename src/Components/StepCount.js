@@ -1,70 +1,94 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
-import { Constants, Accelerometer } from 'expo';
+import { Platform, Text, View } from 'react-native';
+import { Constants, Location, Permissions } from 'expo';
 
+let flag = 2;
+let sumCount=0;
 export default class App extends Component {
     state = {
-        accelerometerData: { x: 0, y: 0, z: 0 }
-    }
-
-    componentWillUnmount() {
-        this._unsubscribeFromAccelerometer();
-    }
-
-    componentDidMount() {
-        this._subscribeToAccelerometer();
-    }
+        location: null,
+        errorMessage: null,
+        lat1: 0,
+        lat2: 0,
+        lon1: 0,
+        lon2: 0,
+        steps: 0
+    };
 
     componentWillMount() {
-        const { width, height } = Dimensions.get('window');
-        this.screenWidth = width;
-        this.screenHeight = height;
-        this.boxWidth = this.screenWidth / 10.0
+        sumCount=0;
+        if (Platform.OS === 'android' && !Constants.isDevice) {
+            this.setState({
+                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+            });
+        } else {
+            setInterval(() => { this._getLocationAsync(); }, 1000);
+        }
     }
 
-    _subscribeToAccelerometer = () => {
-        this._accelerometerSubscription = Accelerometer.addListener(accelerometerData => this.setState({ accelerometerData })
-        );
+    _getLocationAsync = async () => {
+
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            this.setState({
+                errorMessage: 'Permission to access location was denied',
+            });
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        this.setState({ location });
+        if (flag===1) {
+            this.setState({ lat1: this.state.location.coords.latitude, lon1: this.state.location.coords.longitude });
+            flag = 0;
+        }
+        else if(flag===2) {
+            this.setState({ lat1:this.state.location.coords.latitude,lon1:this.state.location.coords.longitude, lat2: this.state.location.coords.latitude, lon2: this.state.location.coords.longitude });
+            flag = 0;
+        }
+        else{
+            this.setState({ lat2: this.state.location.coords.latitude, lon2: this.state.location.coords.longitude });
+            flag = 1;
+        }
+        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
     };
 
-    _unsubscribeFromAccelerometer = () => {
-        this._accelerometerSubscription && this._acceleroMeterSubscription.remove();
-        this._accelerometerSubscription = null;
-    };
+    getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+        var R = 6371; // Radius of the earth in km
+        var dLat = this.deg2rad(lat2 - lat1);  // deg2rad below
+        var dLon = this.deg2rad(lon2 - lon1);
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c; // Distance in km
+        var dr = (d * 1000) // distance in meters
+        sumCount+=dr;
+        console.log(sumCount)
+    }
+
+    deg2rad(deg) {
+        return deg * (Math.PI / 180)
+    }
 
     render() {
+        let text = 'Waiting..';
+        if (this.state.errorMessage) {
+            text = this.state.errorMessage;
+        } else if (this.state.location) {
+            text = JSON.stringify(this.state.location);
+        }
+
         return (
             <View style={styles.container}>
-
-                <View style={
-                    {
-                        position: 'absolute',
-                        top: -(this.screenHeight) * (this.state.accelerometerData.y - 1.0) / 2.0 - (this.boxWidth / 2.0),
-                        left: this.screenWidth * (this.state.accelerometerData.x + 1.0) / 2.0 - (this.boxWidth / 2.0),
-                        width: this.screenWidth / 10.0,
-                        height: this.screenWidth / 10.0,
-                        backgroundColor: '#056ECF',
-                    }
-                } />
-
-                <View style={styles.textContainer}>
-                    <Text style={styles.paragraph}>
-                        Tilt your phone to move the box!
-          </Text>
-
-                    <Text style={styles.paragraph}>
-                        x = {this.state.accelerometerData.x.toFixed(2)}{', '}
-                        y = {this.state.accelerometerData.y.toFixed(2)}{', '}
-                        z = {this.state.accelerometerData.z.toFixed(2)}
-                    </Text>
-                </View>
-
+                <Text style={styles.paragraph}>{this.state.steps}</Text>
+                
             </View>
         );
     }
 }
 
-const styles = StyleSheet.create({
+const styles = {
     container: {
         flex: 1,
         alignItems: 'center',
@@ -73,14 +97,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#ecf0f1',
     },
     paragraph: {
-        margin: 10,
+        margin: 24,
         fontSize: 18,
-        fontWeight: 'bold',
         textAlign: 'center',
-        color: '#34495e',
     },
-    textContainer: {
-        position: 'absolute',
-        top: 40,
-    }
-});
+};
