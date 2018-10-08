@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, View, StatusBar } from 'react-native';
 import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 import WelcomePage from './src/Components/WelcomPage';
@@ -10,26 +10,29 @@ import StepCounter from './src/Components/StepCounter';
 import FoodMain from './src/Components/FoodMain';
 import OpeningPage from './src/Components/OpeningPage';
 import ProfilePage from './src/Components/ProfilePage';
+import StepCount from './src/Components/StepCount';
 
 const StackNav = createStackNavigator(
   {
-    home:HomePage,
-    steps:StepCounter,
-    
+    home: HomePage,
   }
 )
 const SwitchNav = createSwitchNavigator(
   {
-    open:OpeningPage,
+    open: OpeningPage,
     Welcome: WelcomePage,
     Login: LoginPage,
     NewUser: NewUserRegister,
-    foodMainPage:FoodMain,
-    profile:ProfilePage,
-    HomePageEnter:StackNav
+    foodMainPage: FoodMain,
+    profile: ProfilePage,
+    HomePageEnter: StackNav,
+    steps: StepCount
   }
 )
 export default class App extends React.Component {
+  componentDidMount() {
+    StatusBar.setHidden(true);
+  }
   render() {
     return (
       <View style={styles.containerStyle}>

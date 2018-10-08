@@ -3,11 +3,6 @@ import { View, TouchableOpacity, Dimensions, I18nManager, Modal, TextInput, Pick
 import { Container, Header, Content, Card, CardItem, Text, Body, Item, Label, Input, } from 'native-base';
 import axios from 'axios';
 
-const agePick = ["גיל", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"];
-const listAge = agePick.map((ageP, i) =>
-    <Picker.Item label={ageP} value={ageP} key={i} />
-);
-
 export default class ProfilePage extends Component {
     constructor(props) {
         super(props)
