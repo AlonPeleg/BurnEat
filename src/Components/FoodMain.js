@@ -16,46 +16,93 @@ export default class FoodMain extends Component {
 
         this.state = {
             modalVisible: false,
-            FoodList:[]
-        
+            FoodList: []
+
         };
     };
     helbonPressed = () => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
             foodType: 'חלבון'
         }).then((v) => {
-         
-        
-
-            let data= JSON.parse(v.data.d)
-     
-            let list = data.map((food ,index) =>{
+            let data = JSON.parse(v.data.d)
+            let list = data.map((food, index) => {
                 return (
-                <TouchableOpacity key={index} style={{borderRadius:8}}>
-                    <View style={{flexDirection:'row',margin:5,backgroundColor:'white',borderRadius:8}}>
-                     <View  >
-                        <Image source={{uri:foodImages+food.Food_Img_Url}} style={{width:100,height:100,marginLeft:5}}></Image>
-                     </View>
-                     <View style={{marginLeft:20}}>
-                     <Text style={{fontSize:20,marginBottom:10}}>שם:{food.Food_Name}</Text>
-                        <Text style={{fontSize:20}}>קלוריות:{food.Food_Calorie}</Text>
-                     </View>
-                    </View>
-                </TouchableOpacity>
+                    <TouchableOpacity key={index} style={{ borderRadius: 8 }}>
+                        <View style={{ flexDirection: 'row', margin: 5, backgroundColor: 'white', borderRadius: 8 }}>
+                            <View  >
+                                <Image source={{ uri: foodImages + food.Food_Img_Url }} style={{ width: 100, height: 100, marginLeft: 5 }}></Image>
+                            </View>
+                            <View style={{ marginLeft: 20 }}>
+                                <Text style={{ fontSize: 20, marginBottom: 10 }}>שם:{food.Food_Name}</Text>
+                                <Text style={{ fontSize: 20 }}>קלוריות:{food.Food_Calorie}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
                 );
-               })
-              this.setState({FoodList:list});
-
+            })
+            this.setState({ FoodList: list });
         });
-        setTimeout(() => {
-            
+                setTimeout(() => {
             this.setState({ modalVisible: true });
-            return 
+            return
         }, 1500);
-
     }
- 
-    
+    shumanPressed = () => {
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
+            foodType: 'שומן'
+        }).then((v) => {
+            let data = JSON.parse(v.data.d)
+            let list = data.map((food, index) => {
+                return (
+                    <TouchableOpacity key={index} style={{ borderRadius: 8 }}>
+                        <View style={{ flexDirection: 'row', margin: 5, backgroundColor: 'white', borderRadius: 8 }}>
+                            <View  >
+                                <Image source={{ uri: foodImages + food.Food_Img_Url }} style={{ width: 100, height: 100, marginLeft: 5 }}></Image>
+                            </View>
+                            <View style={{ marginLeft: 20 }}>
+                                <Text style={{ fontSize: 20, marginBottom: 10 }}>שם:{food.Food_Name}</Text>
+                                <Text style={{ fontSize: 20 }}>קלוריות:{food.Food_Calorie}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                );
+            })
+            this.setState({ FoodList: list });
+        });
+                setTimeout(() => {
+            this.setState({ modalVisible: true });
+            return
+        }, 1500);
+    }
+    pahmimaPressed = () => {
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
+            foodType: 'פחמימה'
+        }).then((v) => {
+            let data = JSON.parse(v.data.d)
+            let list = data.map((food, index) => {
+                return (
+                    <TouchableOpacity key={index} style={{ borderRadius: 8 }}>
+                        <View style={{ flexDirection: 'row', margin: 5, backgroundColor: 'white', borderRadius: 8 }}>
+                            <View  >
+                                <Image source={{ uri: foodImages + food.Food_Img_Url }} style={{ width: 100, height: 100, marginLeft: 5 }}></Image>
+                            </View>
+                            <View style={{ marginLeft: 20 }}>
+                                <Text style={{ fontSize: 20, marginBottom: 10 }}>שם:{food.Food_Name}</Text>
+                                <Text style={{ fontSize: 20 }}>קלוריות:{food.Food_Calorie}</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                );
+            })
+            this.setState({ FoodList: list });
+        });
+                setTimeout(() => {
+            this.setState({ modalVisible: true });
+            return
+        }, 1500);
+    }
+
+
     render() {
         console.log(this.state.FoodList)
         return (
@@ -93,7 +140,7 @@ export default class FoodMain extends Component {
                     onRequestClose={() => null}
                     style={styles.modalStyle}
                 >
-                  {this.state.FoodList}
+                    {this.state.FoodList}
                     <TouchableOpacity
                         onPress={() => this.setState({ modalVisible: false, })}
                     >
