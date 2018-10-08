@@ -10,7 +10,6 @@ import {
 import BackgroundImage2 from "./BackgroundImage2";
 
 export default class HomePage extends Component {
-
   constructor(props) {
     super(props);
 
@@ -29,7 +28,10 @@ export default class HomePage extends Component {
     AsyncStorage.clear().then((v) => this.props.navigation.navigate("Welcome"));
   }
   goToProfile = async () => {
-    await AsyncStorage.getItem("user").then((v) => this.props.navigation.navigate("profile", { user: v }))
+    await AsyncStorage.getItem("user").then((v) =>{ 
+      console.warn(v);
+      this.props.navigation.navigate("profile", { user: JSON.parse(v) })
+    })
   }
   render() {
     return (
