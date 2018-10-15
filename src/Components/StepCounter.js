@@ -1,92 +1,122 @@
-import Expo from "expo";
-import React from "react";
-import { Pedometer } from "expo";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-
-export default class StepCounter extends React.Component {
-    static navigationOptions = {
-        header: null,
-    };
-
+import React from 'react';
+import {
+    Magnetometer,
+} from 'expo';
+import {
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from 'react-native';
+let flag = 1;
+export default class MagnetometerSensor extends React.Component {
     state = {
-        isPedometerAvailable: "checking",
-        pastStepCount: 0,
-        currentStepCount: 0
-    };
+        MagnetometerData: {},
+        prevX: 0,
+        prevY: 0,
+        prevZ: 0
+    }
+
     componentDidMount() {
-        this._subscribe();
+        Magnetometer.setUpdateInterval(500);
+        this._toggle();
+        setInterval(() => this.tryout(), 1000);
+    }
+
+    tryout = () => {
+        this.setState({ prevX: this.state.MagnetometerData.x, prevY: this.state.MagnetometerData.y, prevZ: this.state.MagnetometerData.z });
+        let s = Math.pow(this.state.MagnetometerData.x - this.state.prevX) + Math.pow(this.state.MagnetometerData.y - this.state.prevY) + Math.pow(this.state.MagnetometerData.z - this.state.prevZ);
+        console.log(s);
     }
 
     componentWillUnmount() {
         this._unsubscribe();
     }
 
+    _toggle = () => {
+        if (this._subscription) {
+            this._unsubscribe();
+        } else {
+            this._subscribe();
+        }
+    }
+
+    _slow = () => {
+        Magnetometer.setUpdateInterval(1000);
+    }
+
+    _fast = () => {
+        Magnetometer.setUpdateInterval(16);
+    }
+
     _subscribe = () => {
-        this._subscription = Pedometer.watchStepCount(result => {
-            this.setState({
-                currentStepCount: result.steps
-            });
+        this._subscription = Magnetometer.addListener((result) => {
+            this.setState({ MagnetometerData: result });
         });
-
-        Pedometer.isAvailableAsync().then(
-            result => {
-                this.setState({
-                    isPedometerAvailable: String(result)
-                });
-            },
-            error => {
-                this.setState({
-                    isPedometerAvailable: "Could not get isPedometerAvailable: " + error
-                });
-            }
-        );
-
-        const end = new Date();
-        const start = new Date();
-        start.setDate(end.getDate() - 1);
-        Pedometer.getStepCountAsync(start, end).then(
-            result => {
-                this.setState({ pastStepCount: result.steps });
-            },
-            error => {
-                this.setState({
-                    pastStepCount: "Could not get stepCount: " + error
-                });
-            }
-        );
-    };
+    }
 
     _unsubscribe = () => {
         this._subscription && this._subscription.remove();
         this._subscription = null;
-    };
-    goBack = () => {
-        this._unsubscribe;
-        this.props.navigation.navigate("home");
     }
+
     render() {
+        let { x, y, z } = this.state.MagnetometerData;
+
+        // console.log("X: " + x, " Y: " + y, " Z: " + z);
+
         return (
-            <View style={styles.container}>
-                <Text>
-                    Steps taken in the last 24 hours: {this.state.pastStepCount}
-                </Text>
-                <Text>Walk! And watch this go up: {this.state.currentStepCount}</Text>
-                <TouchableOpacity
-                    style={{ position: 'absolute', top: 500, left: 100, width: 100, height: 30, backgroundColor: '#ccc' }}
-                    onPress={this.goBack}
-                >
-                    <Text>Go Back</Text>
-                </TouchableOpacity>
+            <View style={styles.sensor}>
+                <Text>Magnetometer:</Text>
+                <Text>x: {round(x)} y: {round(y)} z: {round(z)}</Text>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity onPress={this._toggle} style={styles.button}>
+                        <Text>Toggle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this._slow} style={[styles.button, styles.middleButton]}>
+                        <Text>Slow</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this._fast} style={styles.button}>
+                        <Text>Fast</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
     }
 }
 
+function round(n) {
+    if (!n) {
+        return 0;
+    }
+
+    return Math.floor(n * 100) / 100;
+}
+
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        flex: 1
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        alignItems: 'stretch',
         marginTop: 15,
-        alignItems: "center",
-        justifyContent: "center"
-    }
+    },
+    button: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#eee',
+        padding: 10,
+    },
+    middleButton: {
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderColor: '#ccc',
+    },
+    sensor: {
+        marginTop: 15,
+        paddingHorizontal: 10,
+    },
 });

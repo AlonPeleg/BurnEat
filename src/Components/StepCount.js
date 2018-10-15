@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 
-let flag = 2;
-let sumCount=0;
+let flag = 3;
+let sumCount = 0;
+let temp = 1;
+let i = 0;
 export default class App extends Component {
     state = {
         location: null,
@@ -12,45 +14,51 @@ export default class App extends Component {
         lat2: 0,
         lon1: 0,
         lon2: 0,
-        steps: 0
+        steps: 0,
+        currDistance: 0,
+        prevDistance: 0,
+
     };
 
     componentWillMount() {
-        sumCount=0;
+
         if (Platform.OS === 'android' && !Constants.isDevice) {
             this.setState({
                 errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
             });
         } else {
-            setInterval(() => { this._getLocationAsync(); }, 1000);
+            setInterval(() => {
+                this.getCurrentLocation();
+            }, 2000);
         }
     }
-
-    _getLocationAsync = async () => {
-
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            this.setState({
-                errorMessage: 'Permission to access location was denied',
-            });
-        }
-
-        let location = await Location.getCurrentPositionAsync({});
-        this.setState({ location });
-        if (flag===1) {
-            this.setState({ lat1: this.state.location.coords.latitude, lon1: this.state.location.coords.longitude });
-            flag = 0;
-        }
-        else if(flag===2) {
-            this.setState({ lat1:this.state.location.coords.latitude,lon1:this.state.location.coords.longitude, lat2: this.state.location.coords.latitude, lon2: this.state.location.coords.longitude });
-            flag = 0;
-        }
-        else{
-            this.setState({ lat2: this.state.location.coords.latitude, lon2: this.state.location.coords.longitude });
-            flag = 1;
-        }
-        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
-    };
+    getCurrentLocation = () => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                const coords = { latitude: position.coords.latitude, longitude: position.coords.longitude }
+                console.log(coords.latitude, coords.longitude);
+                if (flag === 3) {
+                    flag = 2;
+                }
+                else if (flag === 1) {
+                    this.setState({ lat1: coords.latitude, lon1: coords.longitude });
+                    flag = 0;
+                    this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                }
+                else if (flag === 2) {
+                    this.setState({ lat1: coords.latitude, lon1: coords.longitude, lat2: coords.latitude, lon2: coords.longitude });
+                    flag = 0;
+                }
+                else {
+                    this.setState({ lat2: coords.latitude, lon2: coords.longitude });
+                    flag = 1;
+                    this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                }
+            },
+            error => alert(error.message),
+            { enableHighAccuracy: true, timeout: 100000, distanceFilter: 1 }
+        );
+    }
 
     getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
@@ -63,8 +71,8 @@ export default class App extends Component {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c; // Distance in km
         var dr = (d * 1000) // distance in meters
-        sumCount+=dr;
-        console.log(sumCount)
+        sumCount += dr;
+        console.log(lat1, lon1, lat2, lon2);
     }
 
     deg2rad(deg) {
@@ -81,8 +89,9 @@ export default class App extends Component {
 
         return (
             <View style={styles.container}>
-                <Text style={styles.paragraph}>{this.state.steps}</Text>
-                
+                <Text style={styles.paragraph}>{this.state.steps} steps</Text>
+                <Text>sum count: {sumCount.toFixed(2)}</Text>
+                <Text>{text}</Text>
             </View>
         );
     }

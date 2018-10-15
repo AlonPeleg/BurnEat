@@ -16,7 +16,7 @@ export default class OpeningPage extends Component {
             } catch (error) {
                 console.warn("Async storage error")
             }
-        }, 3000);
+        }, 1500);
     }
     constructor(props) {
         super(props)
