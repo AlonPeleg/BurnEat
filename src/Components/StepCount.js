@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, Text, View } from 'react-native';
+import { Platform, Text, View, TouchableOpacity } from 'react-native';
 import { Constants, Location, Permissions } from 'expo';
 
 let flag = 3;
@@ -36,27 +36,32 @@ export default class App extends Component {
         navigator.geolocation.getCurrentPosition(
             position => {
                 const coords = { latitude: position.coords.latitude, longitude: position.coords.longitude }
-                console.log(coords.latitude, coords.longitude);
                 if (flag === 3) {
                     flag = 2;
                 }
                 else if (flag === 1) {
                     this.setState({ lat1: coords.latitude, lon1: coords.longitude });
                     flag = 0;
-                    this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                    this.setState({ currDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
+                    if ((this.state.currDistance - this.state.prevDistance) >= 10 || (this.state.currDistance - this.state.prevDistance) <= -10)
+                        this.getDistanceFromLatLonInKm(coords.latitude, coords.longitude, this.state.lat2, this.state.lon2);
                 }
                 else if (flag === 2) {
                     this.setState({ lat1: coords.latitude, lon1: coords.longitude, lat2: coords.latitude, lon2: coords.longitude });
                     flag = 0;
+                    this.setState({ currDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)), prevDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
                 }
                 else {
                     this.setState({ lat2: coords.latitude, lon2: coords.longitude });
                     flag = 1;
-                    this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                    this.setState({ prevDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
+                    if ((this.state.prevDistance - this.state.currDistance) >= 10 || (this.state.prevDistance - this.state.currDistance) <= -10)
+                        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, coords.latitude, coords.longitude);
                 }
+
             },
             error => alert(error.message),
-            { enableHighAccuracy: true, timeout: 100000, distanceFilter: 1 }
+            { enableHighAccuracy: true, }
         );
     }
 
@@ -72,7 +77,8 @@ export default class App extends Component {
         var d = R * c; // Distance in km
         var dr = (d * 1000) // distance in meters
         sumCount += dr;
-        console.log(lat1, lon1, lat2, lon2);
+        console.log(lat1,lon1,lat2,lon2);
+
     }
 
     deg2rad(deg) {
@@ -92,6 +98,15 @@ export default class App extends Component {
                 <Text style={styles.paragraph}>{this.state.steps} steps</Text>
                 <Text>sum count: {sumCount.toFixed(2)}</Text>
                 <Text>{text}</Text>
+                <TouchableOpacity
+                    onPress={() => {
+
+                        this.props.navigation.navigate("home")
+                    }}
+                    style={{ width: 200, height: 25, backgroundColor: "#DDD", alignItems: "center", justifyContent: 'center', }}
+                >
+                    <Text>Back</Text>
+                </TouchableOpacity>
             </View>
         );
     }
