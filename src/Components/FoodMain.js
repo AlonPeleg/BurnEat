@@ -37,7 +37,7 @@ export default class FoodMain extends Component {
             myProgress: 0.0,
             myTDEE: 0,
             myBMR: 0,
-            progressColor: 'red',
+            progressColor: 'grey',
             plateSumCalorie: 0
 
         };
@@ -48,11 +48,14 @@ export default class FoodMain extends Component {
         plateSum += e.Food_Calorie;
         currentPlate += (e.Food_Calorie / this.state.myTDEE);
         console.log(currentPlate)
+        if (currentPlate !==0) {
+            this.setState({ progressColor: '#d84621' })
+        }
         if (currentPlate >= (this.state.myBMR / this.state.myTDEE)) {
-            this.setState({ progressColor: 'green' })
+            this.setState({ progressColor: '#d7d821' })
         }
         if (currentPlate >= 1 && foodFlag === 0) {
-            this.setState({ progressColor: 'blue' });
+            this.setState({ progressColor: '#8dd821' });
             Alert.alert(
                 'Hey now',
                 'You reached your TDEE or Passed it!',
@@ -205,7 +208,7 @@ export default class FoodMain extends Component {
                     onPress={() => { this.props.navigation.navigate("home") }}
                     style={styles.backBtnStyle}
                 >
-                    <Text>Go Back</Text>
+                    <Text>לך אחורה</Text>
                 </TouchableOpacity>
                 <Modal
                     animationType="slide"
@@ -219,9 +222,9 @@ export default class FoodMain extends Component {
                     <TouchableOpacity
                         onPress={() => this.setState({ modalVisible: false, })}
                     >
-                        <View style={{ width: WIDTH, backgroundColor: "rgba(238,206,206,0.7)", height: 60 }}>
-                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 25 }}>
-                                Close
+                        <View style={{ width: WIDTH, backgroundColor: "rgb(221,221,221)", height: 50, justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 20, color: "white", textAlign: 'center', }}>
+                                סגור
                             </Text>
                         </View>
                     </TouchableOpacity>
