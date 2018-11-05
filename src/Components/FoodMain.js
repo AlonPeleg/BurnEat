@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage, Alert } from 'react-native';
 import axios from 'axios';
 
 
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/';
-
+var foodFlag;
 
 export default class FoodMain extends Component {
     componentDidMount() {
+        foodFlag = 0;
         AsyncStorage.getItem("user").then((v) => {
             axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/TDEECalc', {
                 height: JSON.parse(v).Height,
@@ -50,8 +51,18 @@ export default class FoodMain extends Component {
         if (currentPlate >= (this.state.myBMR / this.state.myTDEE)) {
             this.setState({ progressColor: 'green' })
         }
-        if (currentPlate >= 1) {
-            this.setState({ progressColor: 'blue' })
+        if (currentPlate >= 1 && foodFlag === 0) {
+            this.setState({ progressColor: 'blue' });
+            Alert.alert(
+                'Hey now',
+                'You reached your TDEE or Passed it!',
+                [
+                    { text: 'Still Hungry', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                    { text: 'OK', onPress: () => this.setState({ modalVisible: false }) },
+                ],
+                { cancelable: false }
+            )
+            foodFlag = 1;
         }
         this.setState({ myProgress: currentPlate, plateSumCalorie: plateSum })
     }
