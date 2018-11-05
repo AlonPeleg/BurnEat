@@ -48,7 +48,7 @@ export default class FoodMain extends Component {
         plateSum += e.Food_Calorie;
         currentPlate += (e.Food_Calorie / this.state.myTDEE);
         console.log(currentPlate)
-        if (currentPlate !==0) {
+        if (currentPlate !== 0) {
             this.setState({ progressColor: '#d84621' })
         }
         if (currentPlate >= (this.state.myBMR / this.state.myTDEE)) {
@@ -191,6 +191,9 @@ export default class FoodMain extends Component {
                             source={{ uri: siteImages + 'pahmema.jpg' }}
                         />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{alert("Question mark Pressed")}}>
+                        <Image source={{uri:siteImages+'questionMark.png'}} style={{height:17,width:17,marginLeft:10}}/>
+                    </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
                             <Text style={{ color: 'red', fontSize: 20 }}>הצלחת שלי</Text>
@@ -201,14 +204,16 @@ export default class FoodMain extends Component {
                             progress={this.state.myProgress}
                             color={this.state.progressColor}
                         />
-                        <Text>{this.state.plateSumCalorie}/{this.state.myTDEE}</Text>
+                        <View style={{justifyContent: 'center',alignItems:'center'}}>
+                            <Text>{this.state.plateSumCalorie}    /    {this.state.myTDEE}</Text>
+                        </View>
                     </View>
                 </View>
                 <TouchableOpacity
                     onPress={() => { this.props.navigation.navigate("home") }}
                     style={styles.backBtnStyle}
                 >
-                    <Text>לך אחורה</Text>
+                    <Text style={{ fontSize: 20, color: "white" }}>לך אחורה</Text>
                 </TouchableOpacity>
                 <Modal
                     animationType="slide"
@@ -222,7 +227,7 @@ export default class FoodMain extends Component {
                     <TouchableOpacity
                         onPress={() => this.setState({ modalVisible: false, })}
                     >
-                        <View style={{ width: WIDTH, backgroundColor: "rgb(221,221,221)", height: 50, justifyContent: 'center' }}>
+                        <View style={{ width: WIDTH, backgroundColor: "#54a9a3", height: 50, justifyContent: 'center' }}>
                             <Text style={{ fontSize: 20, color: "white", textAlign: 'center', }}>
                                 סגור
                             </Text>
@@ -242,7 +247,7 @@ const styles = {
     backBtnStyle: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ddd',
+        backgroundColor: '#54a9a3',
         height: 60,
     },
     selectionBtn: {
@@ -259,7 +264,7 @@ const styles = {
     },
     myPlate: {
         width: WIDTH,
-        height: (HEIGHT / 3) - 100,
+        height: (HEIGHT / 3) - 120,
         justifyContent: 'center',
     }
 }
