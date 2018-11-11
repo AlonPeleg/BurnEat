@@ -103,6 +103,12 @@ export default class LoginPage extends Component {
                 >
                     <Text> התחבר </Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => { this.props.navigation.navigate("Welcome") }}
+                >
+                    <Text> חזור </Text>
+                </TouchableOpacity>
                 <View>
                     <Modal
                         animationType="slide"
@@ -130,7 +136,7 @@ const styles = {
         alignItems: 'center',
         backgroundColor: '#DDDDDD',
         padding: 10,
-        marginTop: 50
+        marginTop: 25
     },
     modalStyle: {
         position: "absolute",

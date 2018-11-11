@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, StatusBar } from 'react-native'
-import BackgroundImage from "./BackgroundImage";
 
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 
 export default class WelcomePage extends Component {
 
@@ -11,8 +11,11 @@ export default class WelcomePage extends Component {
 
     render() {
         return (
+        <View>
             <View>
-                <BackgroundImage />
+            <Image style={{width:50,height:50}} source={{uri: siteImages + 'shuman.jpg'}}/>
+            </View>
+            <View>  
                 <TouchableOpacity style={[styles.ExistingUserButton, { justifyContent: 'center', alignItems: 'center' }]}
                     onPress={() => { this.props.navigation.navigate("Login") }}
                 >
@@ -24,7 +27,8 @@ export default class WelcomePage extends Component {
                 >
                     <Text style={{ fontSize: 15 }}>משתמש חדש</Text>
                 </TouchableOpacity>
-            </View>
+            </View> 
+        </View>
         )
     };
 }
