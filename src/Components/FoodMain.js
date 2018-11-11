@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage, Alert, ToastAndroid } from 'react-native';
 import axios from 'axios';
 
 
@@ -166,7 +166,18 @@ export default class FoodMain extends Component {
             return
         }, 500);
     }
-
+    questionPressed = () => {
+        ToastAndroid.showWithGravity(
+            'בחר מוצרים לפי\nאחת משלוש הקטגוריות',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+        );
+        ToastAndroid.showWithGravity(
+            '"הצלחת שלי":\nמספר קלורי של הצלחת שלי\nלעומת\nשריפת קלוריות ממוצעת ביום',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+        );
+    }
 
     render() {
 
@@ -191,8 +202,8 @@ export default class FoodMain extends Component {
                             source={{ uri: siteImages + 'pahmema.jpg' }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>{alert("Question mark Pressed")}}>
-                        <Image source={{uri:siteImages+'questionMark.png'}} style={{height:17,width:17,marginLeft:10}}/>
+                    <TouchableOpacity onPress={this.questionPressed}>
+                        <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10 }} />
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
@@ -204,7 +215,7 @@ export default class FoodMain extends Component {
                             progress={this.state.myProgress}
                             color={this.state.progressColor}
                         />
-                        <View style={{justifyContent: 'center',alignItems:'center'}}>
+                        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{this.state.plateSumCalorie}    /    {this.state.myTDEE}</Text>
                         </View>
                     </View>
