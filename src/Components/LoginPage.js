@@ -77,6 +77,7 @@ export default class LoginPage extends Component {
     render() {
         return (
             <View style={styles.container}>
+             <Image style={{ width: WIDTH, height: HEIGHT, position: 'absolute'  }} source={{ uri: siteImages + 'background.jpg' }}/>
                 <View style={styles.inputContainer}>
                     <Image style={styles.inputIcon} source={{ uri: siteImages + 'emailIcon.png' }} />
                     <TextInput style={styles.inputs}
@@ -98,12 +99,12 @@ export default class LoginPage extends Component {
                         onChangeText={this.passChange} />
                 </View>
                 <TouchableOpacity
-                    style={styles.button}
+                    style={[styles.ExistingUserButton, { justifyContent: 'center', alignItems: 'center', left: 100, top: 400 }]}
                     onPress={this.checkLogin}>
                     <Text> התחבר </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={styles.button}
+                    style={[styles.newUserButton, { justifyContent: 'center', alignItems: 'center', left: 100, top: 450 }]}
                     onPress={() => { this.props.navigation.navigate("Welcome") }}
                 >
                     <Text> חזור </Text>
@@ -173,4 +174,20 @@ const styles = {
         marginLeft: 15,
         justifyContent: 'center'
     },
+    newUserButton: {
+        position: "absolute",
+        top: HEIGHT - 65,
+        width: WIDTH - 200,
+        height: 40,
+        backgroundColor: "#FAFAD2",
+        borderRadius: 70
+    },
+    ExistingUserButton: {
+        position: "absolute",
+        top: HEIGHT - 115,
+        width: WIDTH - 200,
+        height: 40,
+        backgroundColor: "#FAFAD2",
+        borderRadius: 70
+    }
 };
