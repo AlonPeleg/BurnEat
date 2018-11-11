@@ -8,6 +8,8 @@ import {
   AsyncStorage,
 } from "react-native";
 
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
+
 export default class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +29,8 @@ export default class HomePage extends Component {
     AsyncStorage.clear().then((v) => this.props.navigation.navigate("Welcome"));
   }
   goToProfile = async () => {
-    await AsyncStorage.getItem("user").then((v) =>{this.props.navigation.navigate("profile", { user: JSON.parse(v) })
+    await AsyncStorage.getItem("user").then((v) => {
+      this.props.navigation.navigate("profile", { user: JSON.parse(v) })
     })
   }
   render() {
@@ -45,19 +48,19 @@ export default class HomePage extends Component {
           <TouchableOpacity onPress={this.workOut}>
             <Image
               style={styles.imageSize}
-              source={require("../Images/gym-workout.jpg")}
+              source={{ uri: siteImages + 'workoutPic.jpg' }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={this.goFood}>
             <Image
               style={styles.imageSize}
-              source={require("../Images/dark-mood.jpg")}
+              source={{ uri: siteImages + 'foodPic.png' }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={this.goRun}>
             <Image
               style={styles.imageSize}
-              source={require("../Images/sonic.jpg")}
+              source={{ uri: siteImages + 'jogPic.jpg' }}
             />
           </TouchableOpacity>
         </View>
