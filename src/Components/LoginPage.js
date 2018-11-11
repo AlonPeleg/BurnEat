@@ -1,28 +1,19 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, AsyncStorage, Modal,StatusBar} from 'react-native';
-import BackgroundImage2 from "./BackgroundImage2";
-import {
-    Container,
-    Content,
-    Form,
-    Item,
-    Input,
-    Label,
-    Toast
-} from "native-base";
+import { View, Text, TouchableOpacity, Dimensions, AsyncStorage, Modal, StatusBar, TextInput, Image } from 'react-native';
 import axios from 'axios';
 
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
+
 export default class LoginPage extends Component {
-    componentDidMount(){
+    componentDidMount() {
         StatusBar.setHidden(true);
-      }
+    }
     constructor(props) {
         super(props)
 
         this.state = {
             emailInput: null,
             passInput: null,
-            test: 'test1',
             modalVisible: false,
             errMsg: ''
         };
@@ -75,28 +66,43 @@ export default class LoginPage extends Component {
             }
         }
     }
+
+    emailFocus = () => {
+        this.setState({ emailInput: '' })
+    }
+    passFocus = () => {
+        this.setState({ passInput: '' })
+    }
+
     render() {
         return (
-            <Container>
-                <BackgroundImage2 />
-                <Content>
-                    <Form>
-                        <Item fixedLabel>
-                            <Label style={{ color: "white" }}>אימייל</Label>
-                            <Input style={{ color: "white" }} onChangeText={this.emailChange} />
-                        </Item>
-                        <Item fixedLabel last>
-                            <Label style={{ color: "white" }}>סיסמא</Label>
-                            <Input style={{ color: "white" }} onChangeText={this.passChange} />
-                        </Item>
-                    </Form>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={this.checkLogin}
-                    >
-                        <Text> התחברות </Text>
-                    </TouchableOpacity>
-                </Content>
+            <View style={styles.container}>
+                <View style={styles.inputContainer}>
+                    <Image style={styles.inputIcon} source={{ uri: siteImages + 'emailIcon.png' }} />
+                    <TextInput style={styles.inputs}
+                        placeholder="אימייל"
+                        value={this.state.emailInput}
+                        onFocus={this.emailFocus}
+                        keyboardType="email-address"
+                        underlineColorAndroid='transparent'
+                        onChangeText={this.emailChange} />
+                </View>
+                <View style={styles.inputContainer}>
+                    <Image style={styles.inputIcon} source={{ uri: siteImages + 'passIcon.png' }} />
+                    <TextInput style={styles.inputs}
+                        placeholder="סיסמא"
+                        value={this.state.passInput}
+                        onFocus={this.passFocus}
+                        secureTextEntry={true}
+                        underlineColorAndroid='transparent'
+                        onChangeText={this.passChange} />
+                </View>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={this.checkLogin}
+                >
+                    <Text> התחבר </Text>
+                </TouchableOpacity>
                 <View>
                     <Modal
                         animationType="slide"
@@ -105,14 +111,14 @@ export default class LoginPage extends Component {
                         onRequestClose={() => null}
                         style={styles.modalStyle}
                     >
-                        <View style={{ top: (HEIGHT / 2) - 75, backgroundColor: "rgba(238,206,206,0.6)", height: 100 }} >
-                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 25 }}>
+                        <View style={{ top: 70, backgroundColor: "rgba(93,108,111,0.6)", height: 100 }} >
+                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 35 }}>
                                 {this.state.errMsg}
                             </Text>
                         </View>
                     </Modal>
                 </View>
-            </Container>
+            </View>
         );
     };
 }
@@ -123,12 +129,43 @@ const styles = {
     button: {
         alignItems: 'center',
         backgroundColor: '#DDDDDD',
-        padding: 10
+        padding: 10,
+        marginTop: 50
     },
     modalStyle: {
         position: "absolute",
         width: "100%",
         height: "100%",
         alignSelf: "center",
-    }
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#DCDCDC',
+    },
+    inputContainer: {
+        borderBottomColor: '#F5FCFF',
+        backgroundColor: '#FFFFFF',
+        borderRadius: 30,
+        borderBottomWidth: 1,
+        width: 250,
+        height: 45,
+        marginBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    inputs: {
+        height: 45,
+        marginLeft: 16,
+        borderBottomColor: '#FFFFFF',
+        flex: 1,
+        textAlign: 'right'
+    },
+    inputIcon: {
+        width: 30,
+        height: 30,
+        marginLeft: 15,
+        justifyContent: 'center'
+    },
 };
