@@ -13,6 +13,7 @@ export default class WelcomePage extends Component {
         return (
         <View>
             <View>
+<<<<<<< HEAD
             <Image style={{width:50,height:50}} source={{uri: siteImages + 'shuman.jpg'}}/>
             </View>
             <View>  
@@ -29,6 +30,23 @@ export default class WelcomePage extends Component {
                 </TouchableOpacity>
             </View> 
         </View>
+=======
+                <BackgroundImage />
+                <View style={{ alignItems: 'center' }}>
+                    <TouchableOpacity style={[styles.ExistingUserButton, { justifyContent: 'center', alignItems: 'center' }]}
+                        onPress={() => { this.props.navigation.navigate("Login") }}
+                    >
+                        <Text style={{ fontSize: 15 }}>משתמש קיים</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.newUserButton, { justifyContent: 'center', alignItems: 'center' }]}
+                        onPress={() => { this.props.navigation.navigate("NewUser") }}
+                    >
+                        <Text style={{ fontSize: 15 }}>משתמש חדש</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+>>>>>>> 45b6d7926d61439bb611df4d6cfa115839ac085c
         )
     };
 }
@@ -41,8 +59,7 @@ const HALFHEIGHT = Dimensions.get('window').height / 2;
 const styles = {
     newUserButton: {
         position: "absolute",
-        top: HEIGHT - 200,
-        left: HALFWIDTH - 70,
+        top: HEIGHT - 65,
         width: WIDTH - 200,
         height: 40,
         backgroundColor: "#FAFAD2",
@@ -50,8 +67,7 @@ const styles = {
     },
     ExistingUserButton: {
         position: "absolute",
-        top: HEIGHT - 250,
-        left: HALFWIDTH - 70,
+        top: HEIGHT - 115,
         width: WIDTH - 200,
         height: 40,
         backgroundColor: "#FAFAD2",
