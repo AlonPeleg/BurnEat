@@ -7,7 +7,6 @@ import {
   Image,
   AsyncStorage,
 } from "react-native";
-import BackgroundImage2 from "./BackgroundImage2";
 
 export default class HomePage extends Component {
   constructor(props) {

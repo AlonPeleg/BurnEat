@@ -7,7 +7,7 @@ const BackgroundImage = () => {
     <View>
       <Text>IMUG</Text>
       <Image
-         source={require('../Images/BW.jpg')} style={containerStyle} 
+         source={require('../Images/backgroundWelcome.png')} style={containerStyle} 
         style={styles.containerStyle}
       />
     </View>
