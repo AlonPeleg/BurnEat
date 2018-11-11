@@ -99,10 +99,16 @@ export default class LoginPage extends Component {
                 </View>
                 <TouchableOpacity
                     style={styles.button}
-                    onPress={this.checkLogin}
-                >
+                    onPress={this.checkLogin}>
                     <Text> התחבר </Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={() => this.props.navigation.navigate("Welcome")}>
+                    <Text> חזרה </Text>
+                </TouchableOpacity>
+
                 <View>
                     <Modal
                         animationType="slide"

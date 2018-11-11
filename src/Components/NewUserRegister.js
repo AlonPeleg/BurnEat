@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, TextInput, Text, Modal, Dimensions } from 'react-native';
-import { Container, Header, Content, Form, Item, Picker, Label, Input, DatePicker, Button } from 'native-base';
+import { View, Text, Modal, Dimensions } from 'react-native';
+import { Container, Content, Form, Item, Picker, Label, Input, Button } from 'native-base';
 import axios from 'axios';
 
 const agePick = ["גיל", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"];
@@ -73,7 +73,12 @@ export default class NewUserRegister extends Component {
                 }, 1500);
             }
         } catch (error) {
-            console.warn("Catch Error on Register.");
+            this.setState({ errMsg: 'ישנם נתונים ריקים', modalVisible: true })
+            this.timeOut = setTimeout(() => {
+
+                this.setState({ modalVisible: false })
+
+            }, 1500);
         }
 
     }
@@ -105,7 +110,8 @@ export default class NewUserRegister extends Component {
                                 {listAge}
                             </Picker>
                         </Item>
-                        <Item floatingLabel>
+
+                        <Item floatingLabel style={{ marginTop: 30 }}>
                             <Label>גובה בס"מ</Label>
                             <Input onChangeText={this.heightChange} returnKeyType="next" keyboardType="numeric" />
                         </Item>
@@ -113,7 +119,8 @@ export default class NewUserRegister extends Component {
                             <Label>משקל בק"ג</Label>
                             <Input onChangeText={this.weightChange} returnKeyType="next" keyboardType="numeric" />
                         </Item>
-                        <View style={{ marginTop: 45 }}>
+
+                        <View style={{ marginTop: 60 }}>
                             <Item picker>
                                 <Picker
                                     prompt="מין"
@@ -160,16 +167,21 @@ export default class NewUserRegister extends Component {
                         onRequestClose={() => null}
                         style={styles.modalStyle}
                     >
-                        <View style={{ top: (HEIGHT / 2) - 75, backgroundColor: "rgba(238,206,206,0.6)", height: 100 }} >
-                            <Text style={{ fontSize: 25, color: "white", textAlign: 'center', marginTop: 25 }}>
+                        <View style={{ top: (HEIGHT / 2) - 200, backgroundColor: "rgba(93,108,111,0.6)", height: 300, justifyContent: 'center', alignItems: 'center' }} >
+                            <Text style={{ fontSize: 25, color: "white" }}>
                                 {this.state.errMsg}
                             </Text>
                         </View>
                     </Modal>
                 </View>
-                <Button block success onPress={this.registerClicked}>
-                    <Text style={{ color: "white" }}>הרשם</Text>
-                </Button>
+                <View style={{ flexDirection: 'row' }}>
+                    <Button block success onPress={this.registerClicked} style={{ width: WIDTH / 2 }}>
+                        <Text style={{ color: "white" }}>הרשם</Text>
+                    </Button>
+                    <Button block success onPress={() => this.props.navigation.navigate("Welcome")} style={{ width: WIDTH / 2 }}>
+                        <Text style={{ color: "white" }}>חזרה</Text>
+                    </Button>
+                </View>
             </Container>
         )
     };
