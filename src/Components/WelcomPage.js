@@ -12,10 +12,8 @@ export default class WelcomePage extends Component {
     render() {
         return (
             <View>
-                <View>
-                <Image style={{ borderRadius:5,width: 80, height: 80,position: 'absolute',top:50,left:50  }} source={{ uri: siteImages + 'BurnEat-red.jpeg' }}/>
-                </View>
-                <Image style={{ width: WIDTH, height: HEIGHT, position: 'absolute'  }} source={{ uri: siteImages + 'background.jpg' }}/>
+                
+                <Image style={{ width: WIDTH, height: HEIGHT,position:'absolute' }} source={{ uri: siteImages + 'BurnEatLogo2.png' }} />
                 <View>
                     <TouchableOpacity style={[styles.ExistingUserButton, { justifyContent: 'center', alignItems: 'center', left: 100, top: 400 }]}
                         onPress={() => { this.props.navigation.navigate("Login") }}
@@ -36,8 +34,6 @@ export default class WelcomePage extends Component {
 
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
-const HALFWIDTH = Dimensions.get('window').width / 2;
-const HALFHEIGHT = Dimensions.get('window').height / 2;
 
 const styles = {
     newUserButton: {

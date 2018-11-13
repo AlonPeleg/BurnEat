@@ -77,7 +77,8 @@ export default class LoginPage extends Component {
     render() {
         return (
             <View style={styles.container}>
-             <Image style={{ width: WIDTH, height: HEIGHT, position: 'absolute'  }} source={{ uri: siteImages + 'background.jpg' }}/>
+                <Image style={{ width: WIDTH, height: HEIGHT, position: 'absolute' }} source={{ uri: siteImages + 'background.jpg' }} />
+                <Image style={{width:'100%',height:100,position:'absolute',top:100}} source={{uri:siteImages+'LoginIcon1.png'}}/>
                 <View style={styles.inputContainer}>
                     <Image style={styles.inputIcon} source={{ uri: siteImages + 'emailIcon.png' }} />
                     <TextInput style={styles.inputs}

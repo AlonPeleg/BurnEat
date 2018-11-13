@@ -6,6 +6,7 @@ let flag = 3;
 let sumCount = 0;
 let temp = 1;
 let i = 0;
+let walkInterval;
 export default class App extends Component {
     state = {
         location: null,
@@ -15,9 +16,6 @@ export default class App extends Component {
         lon1: 0,
         lon2: 0,
         steps: 0,
-        currDistance: 0,
-        prevDistance: 0,
-
     };
 
     componentWillMount() {
@@ -27,9 +25,9 @@ export default class App extends Component {
                 errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
             });
         } else {
-            setInterval(() => {
-                this.getCurrentLocation();
-            }, 2000);
+            // setInterval(() => {
+            //     this.getCurrentLocation();
+            // }, 10000);
         }
     }
     getCurrentLocation = () => {
@@ -42,21 +40,16 @@ export default class App extends Component {
                 else if (flag === 1) {
                     this.setState({ lat1: coords.latitude, lon1: coords.longitude });
                     flag = 0;
-                    this.setState({ currDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
-                    if ((this.state.currDistance - this.state.prevDistance) >= 10 || (this.state.currDistance - this.state.prevDistance) <= -10)
-                        this.getDistanceFromLatLonInKm(coords.latitude, coords.longitude, this.state.lat2, this.state.lon2);
+                    this.getDistanceFromLatLonInKm(coords.latitude, coords.longitude, this.state.lat2, this.state.lon2);
                 }
                 else if (flag === 2) {
                     this.setState({ lat1: coords.latitude, lon1: coords.longitude, lat2: coords.latitude, lon2: coords.longitude });
                     flag = 0;
-                    this.setState({ currDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)), prevDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
                 }
                 else {
                     this.setState({ lat2: coords.latitude, lon2: coords.longitude });
                     flag = 1;
-                    this.setState({ prevDistance: parseInt((coords.latitude * 1000000)) + parseInt((coords.longitude * 1000000)) })
-                    if ((this.state.prevDistance - this.state.currDistance) >= 10 || (this.state.prevDistance - this.state.currDistance) <= -10)
-                        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, coords.latitude, coords.longitude);
+                    this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, coords.latitude, coords.longitude);
                 }
 
             },
@@ -77,7 +70,7 @@ export default class App extends Component {
         var d = R * c; // Distance in km
         var dr = (d * 1000) // distance in meters
         sumCount += dr;
-        console.log(lat1,lon1,lat2,lon2);
+        console.log(dr);
 
     }
 
@@ -85,19 +78,33 @@ export default class App extends Component {
         return deg * (Math.PI / 180)
     }
 
-    render() {
-        let text = 'Waiting..';
-        if (this.state.errorMessage) {
-            text = this.state.errorMessage;
-        } else if (this.state.location) {
-            text = JSON.stringify(this.state.location);
-        }
+    startStopPressed = () => {
+        console.warn('start pressed');
+        walkInterval = setInterval(() => {
+            this.getCurrentLocation();
+        }, 5000);
+    }
 
+    stopPressed = () => {
+        console.warn('stop pressed');
+        clearInterval(walkInterval);
+        flag = 2;
+    }
+
+    render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.paragraph}>{this.state.steps} steps</Text>
-                <Text>sum count: {sumCount.toFixed(2)}</Text>
-                <Text>{text}</Text>
+                <Text style={styles.paragraph}>{sumCount.toFixed(2)} = meters walked{'\n'}</Text>
+                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={this.startPressed}
+                >
+                    <Text>Start</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={this.stopPressed}
+                >
+                    <Text>Stop</Text>
+                </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
 

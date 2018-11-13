@@ -1,5 +1,9 @@
 import React, { Component } from 'react';
-import { View, ActivityIndicator, Image, AsyncStorage } from 'react-native';
+import { View, Image, AsyncStorage,Dimensions } from 'react-native';
+
+
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
+
 
 export default class OpeningPage extends Component {
     componentDidMount() {
@@ -27,21 +31,12 @@ export default class OpeningPage extends Component {
     };
     render() {
         return (
-            <View style={[styles.container, styles.horizontal]}>
-                <ActivityIndicator size="large" color="#0000ff"/>
+            <View>
+                <Image source={{uri:siteImages+'OpeningPageLogo.png'}} style={{width:WIDTH,height:HEIGHT,position:'absolute'}}/>
             </View>
         )
     };
 }
 
-const styles ={
-    container: {
-      flex: 1,
-      justifyContent: 'center'
-    },
-    horizontal: {
-      flexDirection: 'row',
-      justifyContent: 'space-around',
-      padding: 10
-    }
-  }
+const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
