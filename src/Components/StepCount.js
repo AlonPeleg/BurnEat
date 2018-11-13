@@ -7,6 +7,7 @@ let sumCount = 0;
 let temp = 1;
 let i = 0;
 let walkInterval;
+let steps = 0;
 export default class App extends Component {
     state = {
         location: null,
@@ -15,11 +16,11 @@ export default class App extends Component {
         lat2: 0,
         lon1: 0,
         lon2: 0,
-        steps: 0,
+        sumCounter: 0,
+        mySteps: 0
     };
 
     componentWillMount() {
-
         if (Platform.OS === 'android' && !Constants.isDevice) {
             this.setState({
                 errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
@@ -28,6 +29,7 @@ export default class App extends Component {
             // setInterval(() => {
             //     this.getCurrentLocation();
             // }, 10000);
+            console.log("no warnings");
         }
     }
     getCurrentLocation = () => {
@@ -69,32 +71,40 @@ export default class App extends Component {
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         var d = R * c; // Distance in km
         var dr = (d * 1000) // distance in meters
-        sumCount += dr;
-        console.log(dr);
-
+        if (dr >= 1) {
+            sumCount += dr;
+            steps = sumCount * 1.3123;
+            this.setState({ sumCounter: sumCount, mySteps: steps });
+        }
     }
 
     deg2rad(deg) {
         return deg * (Math.PI / 180)
     }
 
-    startStopPressed = () => {
-        console.warn('start pressed');
+    startPressed = () => {
         walkInterval = setInterval(() => {
             this.getCurrentLocation();
-        }, 5000);
+        }, 1000);
     }
 
     stopPressed = () => {
-        console.warn('stop pressed');
         clearInterval(walkInterval);
         flag = 2;
+        alert("you walked " + sumCount.toFixed(0) + " meters\nequal to " + steps.toFixed(0) + " steps");
+    }
+    stepReset = () => {
+        steps = 0;
+        sumCount = 0;
+        flag = 3;
+        this.setState({ mySteps: 0, sumCounter: 0 })
     }
 
     render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.paragraph}>{sumCount.toFixed(2)} = meters walked{'\n'}</Text>
+                <Text style={styles.paragraph}>{this.state.sumCounter.toFixed(1)} = meters walked{'\n'}</Text>
+                <Text style={styles.paragraph}>{this.state.mySteps.toFixed(0)} = steps walked</Text>
                 <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
                     onPress={this.startPressed}
                 >
@@ -104,6 +114,11 @@ export default class App extends Component {
                     onPress={this.stopPressed}
                 >
                     <Text>Stop</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                    onPress={this.stepReset}
+                >
+                    <Text>Reset counter!</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
