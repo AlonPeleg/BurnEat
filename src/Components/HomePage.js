@@ -25,6 +25,9 @@ export default class HomePage extends Component {
   goRun = () => {
     this.props.navigation.navigate("steps");
   }
+  workOut = () => {
+    this.props.navigation.navigate("Fitness");
+  }
   logOut = () => {
     AsyncStorage.clear().then((v) => this.props.navigation.navigate("Welcome"));
   }
