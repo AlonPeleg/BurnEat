@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Modal, Dimensions } from 'react-native';
+import { View, Text, Modal, Dimensions, Image } from 'react-native';
 import { Container, Content, Form, Item, Picker, Label, Input, Button } from 'native-base';
 import axios from 'axios';
 
@@ -7,6 +7,8 @@ const agePick = ["גיל", "14", "15", "16", "17", "18", "19", "20", "21", "22",
 const listAge = agePick.map((ageP, i) =>
     <Picker.Item label={ageP} value={ageP} key={i} />
 );
+
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 
 export default class NewUserRegister extends Component {
     constructor(props) {
@@ -84,47 +86,51 @@ export default class NewUserRegister extends Component {
     }
     render() {
         return (
-            <Container>
-                <Content>
-                    <Form>
-                        <Item floatingLabel>
-                            <Label>שם</Label>
-                            <Input onChangeText={this.nameChange} returnKeyType="next" />
-                        </Item>
-                        <Item floatingLabel>
-                            <Label>אימייל</Label>
+            <Container style={{ backgroundColor: '#d4d4d4' }}>
+                <Image source={{ uri: siteImages + 'SignUpPage.png' }} style={{ position: 'absolute', width: WIDTH, height: 75, top: 10 }} />
+                <Content style={{ marginTop: 110 }}>
+                    <Form style={{ marginTop: 5 }}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Item floatingLabel style={{ width: 200, marginLeft: 20 }}>
+                                <Label style={styles.labelStyle}>שם</Label>
+                                <Input onChangeText={this.nameChange} returnKeyType="next" />
+                            </Item>
+                            <View style={{ width: 120, }}>
+                                <Item picker>
+                                    <Picker
+                                        prompt="הגיל שלי"
+                                        style={{ marginTop: 30, color: 'rgba(0,0,0,0.7)' }}
+                                        selectedValue={this.state.age}
+                                        onValueChange={this.ageChange}
+                                    >
+                                        {listAge}
+                                    </Picker>
+                                </Item>
+                            </View>
+                        </View>
+                        <Item floatingLabel style={{ marginLeft: 20, marginRight: 20 }}>
+                            <Label style={styles.labelStyle}>אימייל</Label>
                             <Input onChangeText={this.emailChange} keyboardType="email-address" returnKeyType="next" />
                         </Item>
-                        <Item floatingLabel>
-                            <Label>סיסמא</Label>
+                        <Item floatingLabel style={{ marginLeft: 20, marginRight: 20 }}>
+                            <Label style={styles.labelStyle}>סיסמא</Label>
                             <Input onChangeText={this.passChange} returnKeyType="next" />
                         </Item>
-                        <Item picker>
-                            <Picker
-                                prompt="הגיל שלי"
-                                style={{ width: undefined, marginTop: 5, marginBottom: 5 }}
-                                selectedValue={this.state.age}
-                                onValueChange={this.ageChange}
-                                style={{ marginLeft: "70%" }}
-                            >
-                                {listAge}
-                            </Picker>
-                        </Item>
-
-                        <Item floatingLabel style={{ marginTop: 30 }}>
-                            <Label>גובה בס"מ</Label>
-                            <Input onChangeText={this.heightChange} returnKeyType="next" keyboardType="numeric" />
-                        </Item>
-                        <Item floatingLabel last>
-                            <Label>משקל בק"ג</Label>
-                            <Input onChangeText={this.weightChange} returnKeyType="next" keyboardType="numeric" />
-                        </Item>
-
-                        <View style={{ marginTop: 60 }}>
+                        <View style={{ flexDirection: 'row', marginLeft: 10 }}>
+                            <Item floatingLabel style={{ width: 150 }}>
+                                <Label style={styles.labelStyle}>גובה בס"מ</Label>
+                                <Input onChangeText={this.heightChange} returnKeyType="next" keyboardType="numeric" />
+                            </Item>
+                            <Item floatingLabel style={{ width: 150 }}>
+                                <Label style={styles.labelStyle}>משקל בק"ג</Label>
+                                <Input onChangeText={this.weightChange} returnKeyType="next" keyboardType="numeric" />
+                            </Item>
+                        </View>
+                        <View style={{ marginTop: 30 }}>
                             <Item picker>
                                 <Picker
                                     prompt="מין"
-                                    style={{ width: undefined }}
+                                    style={{ width: undefined, color: 'rgba(0,0,0,0.7)' }}
                                     placeholder="Select your gender"
                                     placeholderStyle={{ color: "#bfc6ea" }}
                                     placeholderIconColor="#007aff"
@@ -140,7 +146,7 @@ export default class NewUserRegister extends Component {
                                 <Item picker>
                                     <Picker
                                         prompt="רמת אימון"
-                                        style={{ width: undefined }}
+                                        style={{ width: undefined, color: 'rgba(0,0,0,0.7)' }}
                                         placeholder="Select your gender"
                                         placeholderStyle={{ color: "#bfc6ea" }}
                                         placeholderIconColor="#007aff"
@@ -175,10 +181,10 @@ export default class NewUserRegister extends Component {
                     </Modal>
                 </View>
                 <View style={{ flexDirection: 'row' }}>
-                    <Button block success onPress={this.registerClicked} style={{ width: WIDTH / 2 }}>
+                    <Button block danger onPress={this.registerClicked} style={{ width: WIDTH / 2 }}>
                         <Text style={{ color: "white" }}>הרשם</Text>
                     </Button>
-                    <Button block success onPress={() => this.props.navigation.navigate("Welcome")} style={{ width: WIDTH / 2 }}>
+                    <Button block danger onPress={() => this.props.navigation.navigate("Welcome")} style={{ width: WIDTH / 2 }}>
                         <Text style={{ color: "white" }}>חזרה</Text>
                     </Button>
                 </View>
@@ -196,4 +202,7 @@ const styles = {
         height: "100%",
         alignSelf: "center",
     },
+    labelStyle: {
+        paddingRight: 10
+    }
 }
