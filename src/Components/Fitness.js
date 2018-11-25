@@ -71,7 +71,7 @@ export default class Fitness extends Component {
                         <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => console.log('stretch')}>
                             <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
-                                <View style={{ marginLeft: 8, alignItems:'center', }}>
+                                <View style={{ marginLeft: 8, alignItems: 'center', }}>
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 14, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
                                 </View>
@@ -121,7 +121,7 @@ export default class Fitness extends Component {
                         />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.questionPressed}>
-                        <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10 }} />
+                        <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10, marginTop: 2 }} />
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
