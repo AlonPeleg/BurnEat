@@ -57,8 +57,8 @@ export default class ProfilePage extends Component {
     }
     render() {
         return (
-            <Container>
-                <Header />
+            <Container style={{ backgroundColor: '#DDD' }}>
+                <Header style={{ backgroundColor: 'rgba(255, 0, 0, 0.7)' }} />
                 <Content padder>
                     <Card>
                         <CardItem header bordered>
@@ -118,7 +118,7 @@ export default class ProfilePage extends Component {
                     onRequestClose={() => null}
                     style={{ position: "absoulute", height: HEIGHT, width: WIDTH }}
                 >
-                    <Header />
+                    <Header style={{ backgroundColor: 'rgba(255, 0, 0, 0)' }} />
                     <Content padder style={{ backgroundColor: "rgba(0,0,0,0.7)" }}>
                         <Card>
                             <CardItem header bordered>
@@ -133,7 +133,7 @@ export default class ProfilePage extends Component {
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Text>גיל: </Text>
-                                            <TextInput onChangeText={this.ageChange} placeholder="sss" underlineColorAndroid="transparent" placeholderTextColor="black" keyboardType="numeric" />
+                                            <TextInput onChangeText={this.ageChange} placeholder={this.state.mAge + ''} underlineColorAndroid="transparent" placeholderTextColor="black" keyboardType="numeric" />
                                         </View>
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <Text>מין: </Text>
@@ -141,8 +141,8 @@ export default class ProfilePage extends Component {
                                                 selectedValue={this.state.mSex}
                                                 style={{ width: 100 }}
                                                 onValueChange={this.sexChange}>
-                                                <Picker.Item label="זכר" value="0" />
-                                                <Picker.Item label="נקבה" value="1" />
+                                                <Picker.Item label="זכר" value={0} />
+                                                <Picker.Item label="נקבה" value={1} />
                                             </Picker>
                                         </View>
                                     </View>
