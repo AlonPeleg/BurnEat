@@ -5,11 +5,26 @@ import axios from 'axios';
 
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var workoutImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/WorkoutImages/';
-var foodFlag;
+var timerInterval;
+var stretchCounter;
+var userId;
+
 
 export default class Fitness extends Component {
-    componentDidMount() {
+    async componentWillMount() {
+        stretchCounter = this.props.navigation.state.params.currentStretch;
         StatusBar.setHidden(true);
+        await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
+        await AsyncStorage.getItem(userId).then(v => {
+            console.log(v)
+            if (v) {
+                stretchCounter = parseInt(v);
+            }
+            else {
+                stretchCounter = 0
+            }
+        });
+
     }
 
     constructor(props) {
@@ -21,10 +36,34 @@ export default class Fitness extends Component {
             currentImage: '',
             modalVisibleImage: false,
             timerTime: 0,
+            tmpTime: 0,
             strExcFlag: false,
+            timerStartFlag: false,
         };
     };
+    startTimer = () => {
+        let timer = this.state.timerTime;
+        this.setState({ tmpTime: this.state.timerTime, timerStartFlag: true });
+        timerInterval = setInterval(() => {
+            this.setState({ timerTime: timer-- })
+            if (this.state.timerTime === 0) {
+                clearInterval(timerInterval);
+                this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
+                stretchCounter++;
+                ToastAndroid.showWithGravity(
+                    'מתיחה בוצעה בהצלחה',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+                AsyncStorage.setItem(userId, stretchCounter.toString());
+            }
+        }, 10);
 
+    }
+    stopTimer = () => {
+        clearInterval(timerInterval);
+        this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
+    }
     trainPressed = () => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetExerciseList', {
             exerciseType: 1
@@ -49,7 +88,7 @@ export default class Fitness extends Component {
                             <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: '40%', marginLeft: 5 }}></Image>
                                 <View style={{ marginLeft: 13, alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>שם: {item.Exercise_Name}</Text>
+                                    <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 15, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
                                 </View>
                             </View>
@@ -153,7 +192,7 @@ export default class Fitness extends Component {
                             color={this.state.progressColor}
                         />
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text>{this.state.plateSumCalorie}    /    {this.state.myTDEE}</Text>
+                            <Text>{stretchCounter} מתיחות שבוצעו</Text>
                         </View>
                     </View>
                 </View>
@@ -189,7 +228,7 @@ export default class Fitness extends Component {
                     onRequestClose={() => null}
                     style={styles.modalStyle}
                 >
-                    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', }}>
                         <Image source={{ uri: this.state.currentImage }} style={{ height: 250, width: "100%" }} />
                         {this.state.strExcFlag ?
                             <View style={styles.textTimerView}>
@@ -198,13 +237,13 @@ export default class Fitness extends Component {
 
                                     <TouchableOpacity
                                         style={styles.timerBtns}
-                                        onPress={() => console.log('start timer')}
+                                        onPress={this.state.timerStartFlag ? null : this.startTimer}
                                     >
                                         <Text style={{ textAlign: 'center', color: 'white' }}>התחל טיימר</Text>
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={styles.timerBtns}
-                                        onPress={() => console.log('start timer')}
+                                        onPress={this.stopTimer}
                                     >
                                         <Text style={{ textAlign: 'center', color: 'white' }}>אפס טיימר</Text>
                                     </TouchableOpacity>
@@ -249,7 +288,6 @@ const styles = {
         width: WIDTH,
         height: HEIGHT,
         alignSelf: "center",
-
     },
     myPlate: {
         width: WIDTH,

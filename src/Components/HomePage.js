@@ -25,11 +25,22 @@ export default class HomePage extends Component {
   goRun = () => {
     this.props.navigation.navigate("steps");
   }
-  workOut = () => {
-    this.props.navigation.navigate("Fitness");
+  workOut = async () => {
+    let userId;
+    await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
+    let currentStretch;
+    await AsyncStorage.getItem(userId).then(v => {
+      if (v) {
+        currentStretch = parseInt(v);
+      }
+      else {
+        currentStretch = 0
+      }
+    })
+    this.props.navigation.navigate("Fitness", {currentStretch});
   }
   logOut = () => {
-    AsyncStorage.clear().then((v) => this.props.navigation.navigate("Welcome"));
+    AsyncStorage.removeItem("user").then((v) => this.props.navigation.navigate("Welcome"));
   }
   goToProfile = async () => {
     await AsyncStorage.getItem("user").then((v) => {
