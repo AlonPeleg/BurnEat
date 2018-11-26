@@ -18,6 +18,10 @@ export default class Fitness extends Component {
         this.state = {
             modalVisible: false,
             workoutList: [],
+            currentImage: '',
+            modalVisibleImage: false,
+            timerTime: 0,
+            strExcFlag: false,
         };
     };
 
@@ -34,9 +38,16 @@ export default class Fitness extends Component {
 
 
                     return (
-                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => console.log('stretch')}>
+                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => {
+                            this.setState({
+                                modalVisible: false,
+                                modalVisibleImage: true,
+                                currentImage: workoutImages + item.Exercise_Img + '.gif',
+                                strExcFlag: false
+                            })
+                        }}>
                             <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
-                                <Image source={{ uri: workoutImages + item.Exercise_Img }} style={{ height: 100, width: '40%', marginLeft: 5 }}></Image>
+                                <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: '40%', marginLeft: 5 }}></Image>
                                 <View style={{ marginLeft: 13, alignItems: 'center' }}>
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>שם: {item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 15, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
@@ -68,9 +79,17 @@ export default class Fitness extends Component {
 
 
                     return (
-                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => console.log('stretch')}>
+                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => {
+                            this.setState({
+                                modalVisible: false,
+                                modalVisibleImage: true,
+                                currentImage: workoutImages + item.Exercise_Img + '.jpg',
+                                timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
+                                strExcFlag: true
+                            });
+                        }}>
                             <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
-                                <Image source={{ uri: workoutImages + item.Exercise_Img }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
+                                <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
                                 <View style={{ marginLeft: 8, alignItems: 'center', }}>
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 14, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
@@ -163,6 +182,47 @@ export default class Fitness extends Component {
                         </View>
                     </TouchableOpacity>
                 </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisibleImage}
+                    onRequestClose={() => null}
+                    style={styles.modalStyle}
+                >
+                    <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.5)' }}>
+                        <Image source={{ uri: this.state.currentImage }} style={{ height: 250, width: "100%" }} />
+                        {this.state.strExcFlag ?
+                            <View style={styles.textTimerView}>
+                                <Text style={{ marginTop: 15 }}>{this.state.timerTime} שניות</Text>
+                                <View style={styles.timerBtnsView}>
+
+                                    <TouchableOpacity
+                                        style={styles.timerBtns}
+                                        onPress={() => console.log('start timer')}
+                                    >
+                                        <Text style={{ textAlign: 'center', color: 'white' }}>התחל טיימר</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.timerBtns}
+                                        onPress={() => console.log('start timer')}
+                                    >
+                                        <Text style={{ textAlign: 'center', color: 'white' }}>אפס טיימר</Text>
+                                    </TouchableOpacity>
+
+                                </View>
+                            </View>
+                            : null}
+                        <TouchableOpacity
+                            onPress={() => this.setState({ modalVisible: true, modalVisibleImage: false })}
+                        >
+                            <View style={{ width: WIDTH, backgroundColor: "#54a9a3", height: 50, justifyContent: 'center' }}>
+                                <Text style={{ fontSize: 20, color: "white", textAlign: 'center', }}>
+                                    סגור
+                            </Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View >
         )
     };
@@ -195,5 +255,25 @@ const styles = {
         width: WIDTH,
         height: (HEIGHT / 3) - 120,
         justifyContent: 'center',
+    },
+    timerBtns: {
+        backgroundColor: "rgba(190,0,0,0.6)",
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 5,
+        width: "50%"
+    },
+    timerBtnsView: {
+        flexDirection: 'row',
+        marginHorizontal: 1,
+        height: 60,
+        marginTop: 10
+    },
+    textTimerView: {
+        height: 100,
+        width: '100%',
+        backgroundColor: '#DDD',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 }
