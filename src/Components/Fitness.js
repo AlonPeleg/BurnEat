@@ -50,6 +50,7 @@ export default class Fitness extends Component {
             currentImage: '',
             modalVisibleImage: false,
             timerTime: 0,
+            repsTime: 0,
             tmpTime: 0,
             strExcFlag: false,
             timerStartFlag: false,
@@ -162,7 +163,8 @@ export default class Fitness extends Component {
                                 modalVisible: false,
                                 modalVisibleImage: true,
                                 currentImage: workoutImages + item.Exercise_Img + '.gif',
-                                strExcFlag: false
+                                strExcFlag: false,
+                                repsTime: item.Exercise_Reps
                             })
                         }}>
                             <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
@@ -333,7 +335,10 @@ export default class Fitness extends Component {
                             </View>
                             :
                             <View style={styles.textTimerView} >
-                                <Text style={{ marginTop: 15 }}> חזרות</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={{ marginTop: 15, marginRight: 5 }}>{this.state.repsTime}</Text>
+                                    <Text style={{ marginTop: 15 }}>{this.state.repsTime.toString().includes(':')? "שניות" : "חזרות"}</Text>
+                                </View>
                                 <View style={styles.timerBtnsView}>
 
                                     <TouchableOpacity
