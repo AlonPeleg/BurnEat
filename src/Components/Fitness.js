@@ -7,21 +7,36 @@ var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var workoutImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/WorkoutImages/';
 var timerInterval;
 var stretchCounter;
+var exerciseCounter;
 var userId;
+var rTimerInterval;
+var defTimer;
 
 
 export default class Fitness extends Component {
     async componentWillMount() {
+        this.setState({ defualtTimer: 30 })
         stretchCounter = this.props.navigation.state.params.currentStretch;
+        exerciseCounter = this.props.navigation.state.params.currentExc;
         StatusBar.setHidden(true);
         await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
         await AsyncStorage.getItem(userId).then(v => {
             console.log(v)
             if (v) {
-                stretchCounter = parseInt(v);
+                if (JSON.parse(v).stretchs) {
+                    stretchCounter = parseInt(JSON.parse(v).stretchs);
+                } else {
+                    stretchCounter = 0;
+                }
+                if (JSON.parse(v).exercise) {
+                    exerciseCounter = parseInt(JSON.parse(v).exercise);
+                } else {
+                    exerciseCounter = 0;
+                }
             }
             else {
                 stretchCounter = 0
+                exerciseCounter = 0;
             }
         });
 
@@ -29,7 +44,6 @@ export default class Fitness extends Component {
 
     constructor(props) {
         super(props)
-
         this.state = {
             modalVisible: false,
             workoutList: [],
@@ -39,8 +53,68 @@ export default class Fitness extends Component {
             tmpTime: 0,
             strExcFlag: false,
             timerStartFlag: false,
+            addTimerFlag: false,
+            timerOn: false,
+            regTimerFlag: false,
+            defualtTimer: 30,
         };
     };
+    finishExercise = () => {
+        let myTime = 0;
+        if (this.state.addTimerFlag == true) {
+            clearInterval(rTimerInterval);
+            myTime = 30 - this.state.defualtTimer;
+            setTimeout(() => {
+                this.setState({ defualtTimer: 30, regTimerFlag: false })
+            }, 2000);
+            if (myTime === 0) {
+                ToastAndroid.showWithGravity(
+                    "סיימתי!",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+            } else {
+                ToastAndroid.showWithGravity(
+                    "לקח לי " + myTime + " שניות לסיים",
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+            }
+        } else {
+            ToastAndroid.showWithGravity(
+                "סיימתי!",
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+        }
+        exerciseCounter++;
+        let currentStr = 0;
+        AsyncStorage.getItem(userId).then((v) => { currentStr = JSON.parse(v).stretchs })
+        setTimeout(() => {
+            AsyncStorage.setItem(userId, JSON.stringify({ stretchs: currentStr, exercise: exerciseCounter.toString() }));
+        }, 1000);
+
+    }
+    regularTimer = () => {
+        this.setState({ regTimerFlag: true })
+        defTimer = this.state.defualtTimer;
+        rTimerInterval = setInterval(() => {
+            this.setState({ defualtTimer: defTimer-- })
+            if (this.state.defualtTimer === 0) {
+                clearInterval(rTimerInterval);
+                this.setState({ defualtTimer: 30, regTimerFlag: false })
+                ToastAndroid.showWithGravity(
+                    'הזמן עבר',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+            }
+        }, 1000);
+    }
+    resetRegularTimer = () => {
+        clearInterval(rTimerInterval);
+        this.setState({ defualtTimer: 30, regTimerFlag: false })
+    }
     startTimer = () => {
         let timer = this.state.timerTime;
         this.setState({ tmpTime: this.state.timerTime, timerStartFlag: true });
@@ -55,12 +129,18 @@ export default class Fitness extends Component {
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER,
                 );
-                AsyncStorage.setItem(userId, stretchCounter.toString());
+                let currentExercise = 0;
+                AsyncStorage.getItem(userId).then((v) => { currentExercise = JSON.parse(v).exercise })
+                setTimeout(() => {
+                    AsyncStorage.setItem(userId, JSON.stringify({ stretchs: stretchCounter.toString(), exercise: currentExercise }));
+                }, 1000);
+
+
             }
-        }, 10);
+        }, 1000);
 
     }
-    stopTimer = () => {
+    resetTimer = () => {
         clearInterval(timerInterval);
         this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
     }
@@ -193,6 +273,7 @@ export default class Fitness extends Component {
                         />
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{stretchCounter} מתיחות שבוצעו</Text>
+                            <Text>{exerciseCounter} אימונים שבוצעו</Text>
                         </View>
                     </View>
                 </View>
@@ -243,14 +324,54 @@ export default class Fitness extends Component {
                                     </TouchableOpacity>
                                     <TouchableOpacity
                                         style={styles.timerBtns}
-                                        onPress={this.stopTimer}
+                                        onPress={this.resetTimer}
                                     >
                                         <Text style={{ textAlign: 'center', color: 'white' }}>אפס טיימר</Text>
                                     </TouchableOpacity>
 
                                 </View>
                             </View>
-                            : null}
+                            :
+                            <View style={styles.textTimerView} >
+                                <Text style={{ marginTop: 15 }}> חזרות</Text>
+                                <View style={styles.timerBtnsView}>
+
+                                    <TouchableOpacity
+                                        style={styles.timerBtns}
+                                        onPress={this.finishExercise}
+                                    >
+                                        <Text style={{ textAlign: 'center', color: 'white' }}>סיימתי</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={styles.timerBtns}
+                                        onPress={() => { this.setState({ addTimerFlag: !this.state.addTimerFlag, timerOn: !this.state.timerOn }) }}
+                                    >
+                                        <Text style={{ textAlign: 'center', color: 'white' }}>{this.state.timerOn ? "הסר " : "הוסף "} טיימר</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                {this.state.addTimerFlag ?
+                                    <View style={styles.textTimerView}>
+                                        <Text style={{ marginTop: 15 }}>{this.state.defualtTimer} שניות</Text>
+                                        <View style={styles.timerBtnsView}>
+
+                                            <TouchableOpacity
+                                                style={styles.timerBtns}
+                                                onPress={this.state.regTimerFlag ? null : this.regularTimer}
+                                            >
+                                                <Text style={{ textAlign: 'center', color: 'white' }}>התחל טיימר</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={styles.timerBtns}
+                                                onPress={this.resetRegularTimer}
+                                            >
+                                                <Text style={{ textAlign: 'center', color: 'white' }}>אפס טיימר</Text>
+                                            </TouchableOpacity>
+
+                                        </View>
+                                    </View>
+                                    : null}
+                            </View>
+                        }
                         <TouchableOpacity
                             onPress={() => this.setState({ modalVisible: true, modalVisibleImage: false })}
                         >
@@ -308,7 +429,6 @@ const styles = {
         marginTop: 10
     },
     textTimerView: {
-        height: 100,
         width: '100%',
         backgroundColor: '#DDD',
         justifyContent: 'center',
