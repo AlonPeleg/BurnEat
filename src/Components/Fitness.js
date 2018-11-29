@@ -158,7 +158,7 @@ export default class Fitness extends Component {
 
 
                     return (
-                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => {
+                        <TouchableOpacity key={index} style={styles.fetchTouchStyle} onPress={() => {
                             this.setState({
                                 modalVisible: false,
                                 modalVisibleImage: true,
@@ -167,7 +167,7 @@ export default class Fitness extends Component {
                                 repsTime: item.Exercise_Reps
                             })
                         }}>
-                            <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
+                            <View style={styles.fetchViewStyle}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: '40%', marginLeft: 5 }}></Image>
                                 <View style={{ marginLeft: 13, alignItems: 'center' }}>
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
@@ -200,7 +200,7 @@ export default class Fitness extends Component {
 
 
                     return (
-                        <TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => {
+                        <TouchableOpacity key={index} style={styles.fetchTouchStyle} onPress={() => {
                             this.setState({
                                 modalVisible: false,
                                 modalVisibleImage: true,
@@ -209,7 +209,7 @@ export default class Fitness extends Component {
                                 strExcFlag: true
                             });
                         }}>
-                            <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
+                            <View style={styles.fetchViewStyle}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
                                 <View style={{ marginLeft: 8, alignItems: 'center', }}>
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
@@ -337,7 +337,7 @@ export default class Fitness extends Component {
                             <View style={styles.textTimerView} >
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={{ marginTop: 15, marginRight: 5 }}>{this.state.repsTime}</Text>
-                                    <Text style={{ marginTop: 15 }}>{this.state.repsTime.toString().includes(':')? "שניות" : "חזרות"}</Text>
+                                    <Text style={{ marginTop: 15 }}>{this.state.repsTime.toString().includes(':') ? "שניות" : "חזרות"}</Text>
                                 </View>
                                 <View style={styles.timerBtnsView}>
 
@@ -438,5 +438,16 @@ const styles = {
         backgroundColor: '#DDD',
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    fetchViewStyle: {
+        flexDirection: 'row',
+        marginHorizontal: 17,
+        marginVertical: 2.5,
+        backgroundColor: 'white',
+        borderRadius: 8
+    },
+    fetchTouchStyle: {
+        borderRadius: 8,
+        backgroundColor: "rgba(221,221,221,0.9)"
     }
 }
