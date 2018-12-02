@@ -18,6 +18,8 @@
     "react-native-pedometer": "0.0.7",
     "react-native-vector-icons": "^4.6.0",
     "react-native-wheel-picker-android": "^1.1.2",
-    "react-navigation": "^2.11.2"
+    "react-navigation": "^2.11.2",
+    "react-spotify-player": "^1.0.4",
+    "rn-spotify-sdk": "^1.1.5"
   }
 }

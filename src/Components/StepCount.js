@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform, Text, View, TouchableOpacity, Image, ToastAndroid } from 'react-native';
+import { Platform, Text, View, TouchableOpacity, Image, ToastAndroid, WebView, Dimensions } from 'react-native';
 import { Constants } from 'expo';
 
 let flag = 2;
@@ -161,10 +161,16 @@ export default class App extends Component {
                 >
                     <Text>Back</Text>
                 </TouchableOpacity>
+                <View style={{ position: 'absolute', top: HEIGHT - 185, width: 300, height: 300, }}>
+                    <WebView source={{ uri: 'https://open.spotify.com/embed/user/21bxnuiiq2rijemdsagfwuwmi/playlist/3nGBxjlRoCG7ar1y0k9zXV' }} />
+                </View>
             </View>
         );
     }
 }
+
+const WIDTH = Dimensions.get("window").width;
+const HEIGHT = Dimensions.get("window").height;
 
 const styles = {
     container: {

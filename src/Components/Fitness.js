@@ -145,9 +145,10 @@ export default class Fitness extends Component {
         clearInterval(timerInterval);
         this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
     }
-    trainPressed = () => {
+
+    exerciseTypePressed = (e) => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetExerciseList', {
-            exerciseType: 1
+            exerciseType: e
         }).then((v) => {
             let data = JSON.parse(v.data.d)
 
@@ -159,55 +160,23 @@ export default class Fitness extends Component {
 
                     return (
                         <TouchableOpacity key={index} style={styles.fetchTouchStyle} onPress={() => {
-                            this.setState({
-                                modalVisible: false,
-                                modalVisibleImage: true,
-                                currentImage: workoutImages + item.Exercise_Img + '.gif',
-                                strExcFlag: false,
-                                repsTime: item.Exercise_Reps
-                            })
-                        }}>
-                            <View style={styles.fetchViewStyle}>
-                                <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: '40%', marginLeft: 5 }}></Image>
-                                <View style={{ marginLeft: 13, alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
-                                    <Text style={{ fontSize: 15, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                            e === 2 ?
+                                this.setState({
+                                    modalVisible: false,
+                                    modalVisibleImage: true,
+                                    currentImage: workoutImages + item.Exercise_Img + '.jpg',
+                                    timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
+                                    strExcFlag: true
+                                }) :
 
-                    );
-                }}
-            />
-            this.setState({ workoutList: list });
+                                this.setState({
+                                    modalVisible: false,
+                                    modalVisibleImage: true,
+                                    currentImage: workoutImages + item.Exercise_Img + '.gif',
+                                    strExcFlag: false,
+                                    repsTime: item.Exercise_Reps
+                                })
 
-        });
-        setTimeout(() => {
-            this.setState({ modalVisible: true });
-            return
-        }, 500);
-    }
-    stretchPressed = () => {
-        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetExerciseList', {
-            exerciseType: 2
-        }).then((v) => {
-            let data = JSON.parse(v.data.d)
-
-            const list = <FlatList
-                data={data}
-                keyExtractor={(exercise, index) => index.toString()}
-                renderItem={({ item, index }) => {
-
-
-                    return (
-                        <TouchableOpacity key={index} style={styles.fetchTouchStyle} onPress={() => {
-                            this.setState({
-                                modalVisible: false,
-                                modalVisibleImage: true,
-                                currentImage: workoutImages + item.Exercise_Img + '.jpg',
-                                timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
-                                strExcFlag: true
-                            });
                         }}>
                             <View style={styles.fetchViewStyle}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
@@ -248,13 +217,13 @@ export default class Fitness extends Component {
         return (
             <View style={{ flex: 1, }}>
                 <View>
-                    <TouchableOpacity onPress={this.trainPressed}>
+                    <TouchableOpacity onPress={() => this.exerciseTypePressed(1)}>
                         <Image
                             style={styles.selectionBtn}
                             source={{ uri: siteImages + 'workoutPic2.jpg' }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.stretchPressed}>
+                    <TouchableOpacity onPress={() => this.exerciseTypePressed(2)}>
                         <Image
                             style={styles.selectionBtn}
                             source={{ uri: siteImages + 'flex.jpg' }}

@@ -69,76 +69,12 @@ export default class FoodMain extends Component {
         }
         this.setState({ myProgress: currentPlate, plateSumCalorie: plateSum })
     }
-    helbonPressed = () => {
+    foodTypePressed = (e) => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
-            foodType: 'חלבון'
+            foodType: e
         }).then((v) => {
             let data = JSON.parse(v.data.d)
 
-            const list = <FlatList
-                data={data}
-                keyExtractor={(food, index) => index.toString()}
-                renderItem={({ item, index }) => {
-
-
-                    return (<TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => this.foodPressed(item)}>
-                        <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
-                            <Image source={{ uri: foodImages + item.Food_Img_Url }} style={{ width: 100, height: 100, marginLeft: 5 }}></Image>
-                            <View style={{ marginLeft: 25 }}>
-                                <Text style={{ fontSize: 20, marginBottom: 15, marginTop: 10 }}>שם: {item.Food_Name}</Text>
-                                <Text style={{ fontSize: 20 }}>קלוריות ליחידה: {item.Food_Calorie}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-
-                    )
-                }}
-            />
-            this.setState({ FoodList: list });
-
-        });
-        setTimeout(() => {
-            this.setState({ modalVisible: true });
-            return
-        }, 500);
-    }
-    shumanPressed = () => {
-        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
-            foodType: 'שומן'
-        }).then((v) => {
-            let data = JSON.parse(v.data.d)
-            const list = <FlatList
-                data={data}
-                keyExtractor={(food, index) => index.toString()}
-                renderItem={({ item, index }) => {
-
-
-                    return (<TouchableOpacity key={index} style={{ borderRadius: 8, backgroundColor: "rgba(221,221,221,0.9)" }} onPress={() => this.foodPressed(item)}>
-                        <View style={{ flexDirection: 'row', marginHorizontal: 17, marginVertical: 2.5, backgroundColor: 'white', borderRadius: 8 }}>
-                            <Image source={{ uri: foodImages + item.Food_Img_Url }} style={{ width: 100, height: 100, marginLeft: 5 }}></Image>
-                            <View style={{ marginLeft: 25 }}>
-                                <Text style={{ fontSize: 20, marginBottom: 15, marginTop: 10 }}>שם: {item.Food_Name}</Text>
-                                <Text style={{ fontSize: 20 }}>קלוריות ליחידה: {item.Food_Calorie}</Text>
-                            </View>
-                        </View>
-                    </TouchableOpacity>
-
-                    )
-                }}
-            />
-            this.setState({ FoodList: list });
-
-        });
-        setTimeout(() => {
-            this.setState({ modalVisible: true });
-            return
-        }, 500);
-    }
-    pahmimaPressed = () => {
-        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
-            foodType: 'פחמימה'
-        }).then((v) => {
-            let data = JSON.parse(v.data.d)
             const list = <FlatList
                 data={data}
                 keyExtractor={(food, index) => index.toString()}
@@ -184,19 +120,19 @@ export default class FoodMain extends Component {
         return (
             <View style={{ flex: 1, }}>
                 <View>
-                    <TouchableOpacity onPress={this.helbonPressed}>
+                    <TouchableOpacity onPress={() => this.foodTypePressed('חלבון')}>
                         <Image
                             style={styles.selectionBtn}
                             source={{ uri: siteImages + 'helbon.jpg' }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.shumanPressed}>
+                    <TouchableOpacity onPress={() => this.foodTypePressed('שומן')}>
                         <Image
                             style={styles.selectionBtn}
                             source={{ uri: siteImages + 'shuman.jpg' }}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={this.pahmimaPressed}>
+                    <TouchableOpacity onPress={() => this.foodTypePressed('פחמימה')}>
                         <Image
                             style={styles.selectionBtn}
                             source={{ uri: siteImages + 'pahmema.jpg' }}
