@@ -19,72 +19,76 @@ export default class HomePage extends Component {
     };
   }
   static navigationOptions = { header: null }
-  goFood = () => {
-    this.props.navigation.navigate("foodMainPage");
-  }
-  goRun = () => {
-    this.props.navigation.navigate("steps");
-  }
-  workOut = async () => {
-    let userId;
-    await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
-    let currentStretch;
-    let currentExc;
-    await AsyncStorage.getItem(userId).then(v => {
-      if (v) {
-        console.log(v)
-        if (JSON.parse(v).stretchs) {
-          stretchCounter = parseInt(JSON.parse(v).stretchs);
-        } else {
-          stretchCounter = 0;
+
+  goToPage = async (choosedPage) => {
+    if (choosedPage === 1) {
+      let userId;
+      await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
+      let currentStretch;
+      let currentExc;
+      await AsyncStorage.getItem(userId).then(v => {
+        if (v) {
+          console.log(v)
+          if (JSON.parse(v).stretchs) {
+            stretchCounter = parseInt(JSON.parse(v).stretchs);
+          } else {
+            stretchCounter = 0;
+          }
+          if (JSON.parse(v).exercise) {
+            exerciseCounter = parseInt(JSON.parse(v).exercise);
+          } else {
+            exerciseCounter = 0;
+          }
         }
-        if (JSON.parse(v).exercise) {
-          exerciseCounter = parseInt(JSON.parse(v).exercise);
-        } else {
-          exerciseCounter = 0;
+        else {
+          AsyncStorage.setItem(userId, JSON.stringify({ stretchs: 0, exercise: 0 }))
+          currentStretch = 0
+          currentExc = 0;
         }
-      }
-      else {
-        AsyncStorage.setItem(userId, JSON.stringify({ stretchs: 0, exercise: 0 }))
-        currentStretch = 0
-        currentExc = 0;
-      }
-    })
-    this.props.navigation.navigate("Fitness", { currentStretch, currentExc });
+      })
+      this.props.navigation.navigate("Fitness", { currentStretch, currentExc });
+    }
+    else if (choosedPage === 2) {
+      this.props.navigation.navigate("foodMainPage");
+    }
+    else if (choosedPage === 3) {
+      this.props.navigation.navigate("steps");
+    }
+    else if (choosedPage === 4) {
+      await AsyncStorage.getItem("user").then((v) => {
+        this.props.navigation.navigate("profile", { user: JSON.parse(v) })
+      })
+    }
+    else if (choosedPage === 5) {
+      AsyncStorage.removeItem("user").then((v) => this.props.navigation.navigate("Welcome"));
+    }
   }
-  logOut = () => {
-    AsyncStorage.removeItem("user").then((v) => this.props.navigation.navigate("Welcome"));
-  }
-  goToProfile = async () => {
-    await AsyncStorage.getItem("user").then((v) => {
-      this.props.navigation.navigate("profile", { user: JSON.parse(v) })
-    })
-  }
+
   render() {
     return (
       <View style={{ flex: 1, flexDirection: 'column' }}>
         <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity onPress={this.goToProfile} style={styles.logOutProfileBtns} >
+          <TouchableOpacity onPress={() => this.goToPage(4)} style={styles.logOutProfileBtns} >
             <Text>פרופיל</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.logOut} style={styles.logOutProfileBtns} >
+          <TouchableOpacity onPress={() => this.goToPage(5)} style={styles.logOutProfileBtns} >
             <Text>התנתק</Text>
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity onPress={this.workOut}>
+          <TouchableOpacity onPress={() => this.goToPage(1)}>
             <Image
               style={styles.imageSize}
               source={{ uri: siteImages + 'workoutPic.jpg' }}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.goFood}>
+          <TouchableOpacity onPress={() => this.goToPage(2)}>
             <Image
               style={styles.imageSize}
               source={{ uri: siteImages + 'foodPic.png' }}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.goRun}>
+          <TouchableOpacity onPress={() => this.goToPage(3)}>
             <Image
               style={styles.imageSize}
               source={{ uri: siteImages + 'jogPic.jpg' }}
