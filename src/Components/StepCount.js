@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Platform, Text, View, TouchableOpacity, Image, ToastAndroid, WebView, Dimensions } from 'react-native';
 import { Constants } from 'expo';
 
+import VerifySpotify from './VerifySpotify';
+
 let flag = 2;
 let sumCount = 0;
 let temp = 1;
@@ -137,17 +139,17 @@ export default class App extends Component {
                     <Text style={styles.paragraph}>{this.state.mySteps.toFixed(0)}</Text>
                     <Image source={{ uri: siteImages + 'stepsIcon2.png' }} style={{ width: 50, height: 50 }} />
                 </View>
-                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                <TouchableOpacity style={styles.btnStyle}
                     onPress={this.startPressed}
                 >
                     <Text>Start</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                <TouchableOpacity style={styles.btnStyle}
                     onPress={this.stopPressed}
                 >
                     <Text>Stop</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={{ width: 200, height: 25, backgroundColor: '#DDD', alignItems: 'center', justifyContent: 'center' }}
+                <TouchableOpacity style={styles.btnStyle}
                     onPress={this.stepReset}
                 >
                     <Text>Reset counter!</Text>
@@ -161,15 +163,14 @@ export default class App extends Component {
                 >
                     <Text>Back</Text>
                 </TouchableOpacity>
-                <View style={{ position: 'absolute', top: HEIGHT - 185, width: 300, height: 300, }}>
-                    <WebView source={{ uri: 'https://open.spotify.com/embed/user/21bxnuiiq2rijemdsagfwuwmi/playlist/3nGBxjlRoCG7ar1y0k9zXV' }} />
+                <View style={{ position: 'absolute', top: HEIGHT - 170, width: 300, height: 300, }}>
+                    <VerifySpotify />
                 </View>
             </View>
         );
     }
 }
 
-const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const styles = {
@@ -185,4 +186,11 @@ const styles = {
         fontSize: 18,
         textAlign: 'center',
     },
+    btnStyle: {
+        width: 200,
+        height: 30,
+        backgroundColor: '#DDD',
+        alignItems: 'center',
+        justifyContent: 'center'
+    }
 };
