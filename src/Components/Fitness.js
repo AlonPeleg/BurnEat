@@ -43,7 +43,8 @@ export default class Fitness extends Component {
             defualtTimer: 30,
             currentExeNameChosen: '',
             dailyExercises: 0,
-            totalExercises: 0
+            totalExercises: 0,
+            checked: null
         };
     };
     finishExercise = () => {
@@ -195,8 +196,7 @@ export default class Fitness extends Component {
                                     strExcFlag: false,
                                     repsTime: item.Exercise_Reps,
                                     currentExeNameChosen: item.Exercise_Name
-                                })
-
+                                });
                         }}>
                             <View style={styles.fetchViewStyle}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
