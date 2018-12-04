@@ -1,10 +1,11 @@
 import React from 'react';
-import { Button, Text, View, WebView } from 'react-native';
+import { Button, Text, View, WebView, TouchableOpacity, Image } from 'react-native';
 import { AuthSession, Linking } from 'expo';
 
 const FB_APP_ID = 'com.spotify.w-spotify';
 const clientID = '59090b31175847cc8623d55393b895aa';
 const clientSecretID = 'c2fb4e2b4f9a427e91bf45db2d3fa592';
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 
 export default class App extends React.Component {
 
@@ -15,7 +16,9 @@ export default class App extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Button title="Open Spotify Auth" onPress={this._handlePressAsync} />
+                <TouchableOpacity onPress={this._handlePressAsync}>
+                    <Image source={{ uri: siteImages + 'spotifyStart.png' }} style={{ width: 350, height: 90 }} />
+                </TouchableOpacity>
                 {this.state.result ? (
                     <WebView source={{ uri: 'https://open.spotify.com/embed/user/spotify/playlist/37i9dQZF1DXdxcBWuJkbcy' }} style={{ width: 300, height: 100 }} />
                 ) : null}

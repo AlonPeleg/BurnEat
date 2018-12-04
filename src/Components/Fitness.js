@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage, Alert, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, AsyncStorage, ToastAndroid } from 'react-native';
 import axios from 'axios';
 
 
@@ -39,7 +39,6 @@ export default class Fitness extends Component {
                 exerciseCounter = 0;
             }
         });
-
     }
 
     constructor(props) {
@@ -58,6 +57,7 @@ export default class Fitness extends Component {
             timerOn: false,
             regTimerFlag: false,
             defualtTimer: 30,
+            currentExeNameChosen: ''
         };
     };
     finishExercise = () => {
@@ -95,6 +95,10 @@ export default class Fitness extends Component {
             AsyncStorage.setItem(userId, JSON.stringify({ stretchs: currentStr, exercise: exerciseCounter.toString() }));
         }, 1000);
 
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+            exName: this.state.currentExeNameChosen
+        }).then((v) => console.log(v))
+
     }
     regularTimer = () => {
         this.setState({ regTimerFlag: true })
@@ -109,6 +113,9 @@ export default class Fitness extends Component {
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER,
                 );
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+                    exName: this.state.currentExeNameChosen
+                }).then((v) => console.log(v))
             }
         }, 1000);
     }
@@ -130,6 +137,10 @@ export default class Fitness extends Component {
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER,
                 );
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+                    exName: this.state.currentExeNameChosen
+                }).then((v) => console.log(v))
+
                 let currentExercise = 0;
                 AsyncStorage.getItem(userId).then((v) => { currentExercise = JSON.parse(v).exercise })
                 setTimeout(() => {
@@ -166,7 +177,8 @@ export default class Fitness extends Component {
                                     modalVisibleImage: true,
                                     currentImage: workoutImages + item.Exercise_Img + '.jpg',
                                     timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
-                                    strExcFlag: true
+                                    strExcFlag: true,
+                                    currentExeNameChosen: item.Exercise_Name
                                 }) :
 
                                 this.setState({
@@ -174,7 +186,8 @@ export default class Fitness extends Component {
                                     modalVisibleImage: true,
                                     currentImage: workoutImages + item.Exercise_Img + '.gif',
                                     strExcFlag: false,
-                                    repsTime: item.Exercise_Reps
+                                    repsTime: item.Exercise_Reps,
+                                    currentExeNameChosen: item.Exercise_Name
                                 })
 
                         }}>
@@ -184,6 +197,9 @@ export default class Fitness extends Component {
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 14, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
                                 </View>
+                                {item.f === 1 ?
+                                    <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 20, height: 20, width: 20, }} />
+                                    : null}
                             </View>
                         </TouchableOpacity>
 
@@ -236,12 +252,6 @@ export default class Fitness extends Component {
                         <View style={{ alignItems: 'center' }}>
                             <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
                         </View>
-                        <ProgressBarAndroid
-                            styleAttr="Horizontal"
-                            indeterminate={false}
-                            progress={this.state.myProgress}
-                            color={this.state.progressColor}
-                        />
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{stretchCounter} מתיחות שבוצעו</Text>
                             <Text>{exerciseCounter} אימונים שבוצעו</Text>
