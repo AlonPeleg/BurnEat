@@ -260,7 +260,7 @@ export default class Fitness extends Component {
                             <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
                         </View>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text>{this.state.dailyExercises} אימונים יומיים שבוצעו</Text>
+                            <Text>{this.state.dailyExercises} אימונים שבוצעו היום</Text>
                             <Text>{this.state.totalExercises} אימונים שבוצעו בכללי</Text>
                         </View>
                     </View>
