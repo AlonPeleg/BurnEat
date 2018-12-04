@@ -6,8 +6,6 @@ import axios from 'axios';
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var workoutImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/WorkoutImages/';
 var timerInterval;
-var stretchCounter;
-var exerciseCounter;
 var userId;
 var rTimerInterval;
 var defTimer;
@@ -15,30 +13,16 @@ var defTimer;
 
 export default class Fitness extends Component {
     async componentWillMount() {
-        this.setState({ defualtTimer: 30 })
-        stretchCounter = this.props.navigation.state.params.currentStretch;
-        exerciseCounter = this.props.navigation.state.params.currentExc;
+        this.setState({ defualtTimer: 30 });
         StatusBar.setHidden(true);
         await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
-        await AsyncStorage.getItem(userId).then(v => {
-            console.log(v)
-            if (v) {
-                if (JSON.parse(v).stretchs) {
-                    stretchCounter = parseInt(JSON.parse(v).stretchs);
-                } else {
-                    stretchCounter = 0;
-                }
-                if (JSON.parse(v).exercise) {
-                    exerciseCounter = parseInt(JSON.parse(v).exercise);
-                } else {
-                    exerciseCounter = 0;
-                }
-            }
-            else {
-                stretchCounter = 0
-                exerciseCounter = 0;
-            }
-        });
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+            em: userId
+        }).then((v) => this.setState({
+            dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+            , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+        }))
+
     }
 
     constructor(props) {
@@ -57,7 +41,9 @@ export default class Fitness extends Component {
             timerOn: false,
             regTimerFlag: false,
             defualtTimer: 30,
-            currentExeNameChosen: ''
+            currentExeNameChosen: '',
+            dailyExercises: 0,
+            totalExercises: 0
         };
     };
     finishExercise = () => {
@@ -88,16 +74,21 @@ export default class Fitness extends Component {
                 ToastAndroid.CENTER,
             );
         }
-        exerciseCounter++;
-        let currentStr = 0;
-        AsyncStorage.getItem(userId).then((v) => { currentStr = JSON.parse(v).stretchs })
-        setTimeout(() => {
-            AsyncStorage.setItem(userId, JSON.stringify({ stretchs: currentStr, exercise: exerciseCounter.toString() }));
-        }, 1000);
-
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
             exName: this.state.currentExeNameChosen
-        }).then((v) => console.log(v))
+        })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+            em: userId
+        })
+        setTimeout(() => {
+            axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                em: userId
+            }).then((v) => this.setState({
+                dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+            }))
+        }, 500);
+
 
     }
     regularTimer = () => {
@@ -115,7 +106,18 @@ export default class Fitness extends Component {
                 );
                 axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
                     exName: this.state.currentExeNameChosen
-                }).then((v) => console.log(v))
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+                    em: userId
+                })
+                setTimeout(() => {
+                    axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                        em: userId
+                    }).then((v) => this.setState({
+                        dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                        , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+                    }))
+                }, 500);
             }
         }, 1000);
     }
@@ -130,8 +132,7 @@ export default class Fitness extends Component {
             this.setState({ timerTime: timer-- })
             if (this.state.timerTime === 0) {
                 clearInterval(timerInterval);
-                this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
-                stretchCounter++;
+                this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false });
                 ToastAndroid.showWithGravity(
                     'מתיחה בוצעה בהצלחה',
                     ToastAndroid.SHORT,
@@ -139,14 +140,20 @@ export default class Fitness extends Component {
                 );
                 axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
                     exName: this.state.currentExeNameChosen
-                }).then((v) => console.log(v))
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+                    em: userId
+                })
+                setTimeout(() => {
+                    axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                        em: userId
+                    }).then((v) => this.setState({
+                        dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                        , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+                    }))
+                }, 500);
 
                 let currentExercise = 0;
-                AsyncStorage.getItem(userId).then((v) => { currentExercise = JSON.parse(v).exercise })
-                setTimeout(() => {
-                    AsyncStorage.setItem(userId, JSON.stringify({ stretchs: stretchCounter.toString(), exercise: currentExercise }));
-                }, 1000);
-
 
             }
         }, 1000);
@@ -253,8 +260,8 @@ export default class Fitness extends Component {
                             <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
                         </View>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text>{stretchCounter} מתיחות שבוצעו</Text>
-                            <Text>{exerciseCounter} אימונים שבוצעו</Text>
+                            <Text>{this.state.dailyExercises} אימונים יומיים שבוצעו</Text>
+                            <Text>{this.state.totalExercises} אימונים שבוצעו בכללי</Text>
                         </View>
                     </View>
                 </View>

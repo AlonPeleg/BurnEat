@@ -22,31 +22,7 @@ export default class HomePage extends Component {
 
   goToPage = async (choosedPage) => {
     if (choosedPage === 1) {
-      let userId;
-      await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
-      let currentStretch;
-      let currentExc;
-      await AsyncStorage.getItem(userId).then(v => {
-        if (v) {
-          console.log(v)
-          if (JSON.parse(v).stretchs) {
-            stretchCounter = parseInt(JSON.parse(v).stretchs);
-          } else {
-            stretchCounter = 0;
-          }
-          if (JSON.parse(v).exercise) {
-            exerciseCounter = parseInt(JSON.parse(v).exercise);
-          } else {
-            exerciseCounter = 0;
-          }
-        }
-        else {
-          AsyncStorage.setItem(userId, JSON.stringify({ stretchs: 0, exercise: 0 }))
-          currentStretch = 0
-          currentExc = 0;
-        }
-      })
-      this.props.navigation.navigate("Fitness", { currentStretch, currentExc });
+      this.props.navigation.navigate("Fitness");
     }
     else if (choosedPage === 2) {
       this.props.navigation.navigate("foodMainPage");
