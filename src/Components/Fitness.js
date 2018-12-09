@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, AsyncStorage, ToastAndroid } from 'react-native';
 import axios from 'axios';
+import { Card, CardItem, Body } from 'native-base';
 
 
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
@@ -30,8 +31,10 @@ export default class Fitness extends Component {
         this.state = {
             modalVisible: false,
             workoutList: [],
+            myDailyList: [],
             currentImage: '',
             modalVisibleImage: false,
+            dailyModalVisible: false,
             timerTime: 0,
             repsTime: 0,
             tmpTime: 0,
@@ -44,7 +47,9 @@ export default class Fitness extends Component {
             currentExeNameChosen: '',
             dailyExercises: 0,
             totalExercises: 0,
-            checked: null
+            checked: null,
+            dailyExName: '',
+            dailyExImg: '',
         };
     };
     finishExercise = () => {
@@ -81,6 +86,11 @@ export default class Fitness extends Component {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
             em: userId
         })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+            uEmail: userId,
+            exName: this.state.dailyExName,
+            exImg: this.state.dailyExImg
+        })
         setTimeout(() => {
             axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
                 em: userId
@@ -110,6 +120,11 @@ export default class Fitness extends Component {
                 })
                 axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
                     em: userId
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+                    uEmail: userId,
+                    exName: this.state.dailyExName,
+                    exImg: this.state.dailyExImg
                 })
                 setTimeout(() => {
                     axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
@@ -145,6 +160,11 @@ export default class Fitness extends Component {
                 axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
                     em: userId
                 })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+                    uEmail: userId,
+                    exName: this.state.dailyExName,
+                    exImg: this.state.dailyExImg
+                })
                 setTimeout(() => {
                     axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
                         em: userId
@@ -153,9 +173,6 @@ export default class Fitness extends Component {
                         , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
                     }))
                 }, 500);
-
-                let currentExercise = 0;
-
             }
         }, 1000);
 
@@ -186,7 +203,9 @@ export default class Fitness extends Component {
                                     currentImage: workoutImages + item.Exercise_Img + '.jpg',
                                     timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
                                     strExcFlag: true,
-                                    currentExeNameChosen: item.Exercise_Name
+                                    currentExeNameChosen: item.Exercise_Name,
+                                    dailyExName: item.Exercise_Name,
+                                    dailyExImg: item.Exercise_Img
                                 }) :
 
                                 this.setState({
@@ -195,7 +214,9 @@ export default class Fitness extends Component {
                                     currentImage: workoutImages + item.Exercise_Img + '.gif',
                                     strExcFlag: false,
                                     repsTime: item.Exercise_Reps,
-                                    currentExeNameChosen: item.Exercise_Name
+                                    currentExeNameChosen: item.Exercise_Name,
+                                    dailyExName: item.Exercise_Name,
+                                    dailyExImg: item.Exercise_Img
                                 });
                         }}>
                             <View style={styles.fetchViewStyle}>
@@ -234,6 +255,46 @@ export default class Fitness extends Component {
             ToastAndroid.CENTER,
         );
     }
+    myDailyExercises = () => {
+
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetDailyExercises', {
+            em: userId
+        }).then((v) => {
+            let data = JSON.parse(v.data.d)
+
+            const list = <FlatList
+                data={data}
+                keyExtractor={(exercise, index) => index.toString()}
+                renderItem={({ item, index }) => {
+
+
+                    return (
+                        <View style={{ borderWidth: 4, borderColor: 'rgba(221,221,221,0.9)', borderRadius: 5 }}>
+                            <CardItem>
+                                <Body>
+                                    <View key={index} style={{ flexDirection: 'row' }}>
+                                        <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: 170, marginHorizontal: 5 }} />
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', padding: 3, marginLeft: 10 }}>
+                                            <Text style={{ textAlign: 'center' }}>{item.Exercise_Name}</Text>
+                                        </View>
+                                        <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 43, height: 20, width: 20, left: WIDTH - 60 }} />
+                                    </View>
+                                </Body>
+                            </CardItem>
+                        </View>
+
+
+                    );
+                }}
+            />
+            this.setState({ myDailyList: list });
+
+        });
+        setTimeout(() => {
+            this.setState({ dailyModalVisible: true });
+            return
+        }, 500);
+    }
 
     render() {
 
@@ -257,7 +318,9 @@ export default class Fitness extends Component {
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
+                            <TouchableOpacity onPress={this.myDailyExercises}>
+                                <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
+                            </TouchableOpacity>
                         </View>
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{this.state.dailyExercises} אימונים שבוצעו היום</Text>
@@ -373,6 +436,25 @@ export default class Fitness extends Component {
                             </View>
                         </TouchableOpacity>
                     </View>
+                </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.dailyModalVisible}
+                    onRequestClose={() => null}
+                    style={styles.modalStyle}
+
+                >
+                    {this.state.myDailyList}
+                    <TouchableOpacity
+                        onPress={() => this.setState({ dailyModalVisible: false, })}
+                    >
+                        <View style={{ width: WIDTH, backgroundColor: "#54a9a3", height: 50, justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 20, color: "white", textAlign: 'center', zIndex: 1 }}>
+                                סגור
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </Modal>
             </View >
         )
