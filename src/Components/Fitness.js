@@ -273,11 +273,11 @@ export default class Fitness extends Component {
                             <CardItem>
                                 <Body>
                                     <View key={index} style={{ flexDirection: 'row' }}>
-                                        <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 100, width: 170, marginHorizontal: 5 }} />
+                                        <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 80, width: 150, marginHorizontal: 5 }} />
                                         <View style={{ justifyContent: 'center', alignItems: 'center', padding: 3, marginLeft: 10 }}>
                                             <Text style={{ textAlign: 'center' }}>{item.Exercise_Name}</Text>
                                         </View>
-                                        <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 43, height: 20, width: 20, left: WIDTH - 60 }} />
+                                        <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 32, height: 20, width: 20, left: WIDTH - 60 }} />
                                     </View>
                                 </Body>
                             </CardItem>
@@ -295,7 +295,9 @@ export default class Fitness extends Component {
             return
         }, 500);
     }
+    resetDailyPressed = () => {
 
+    }
     render() {
 
         return (
@@ -315,6 +317,9 @@ export default class Fitness extends Component {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={this.questionPressed}>
                         <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10, marginTop: 2 }} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={this.resetDailyPressed} style={{ position: 'absolute', top: HEIGHT - 172, left: WIDTH - 50 }}>
+                        <Image source={{ uri: siteImages + 'resetWorkout.png' }} style={{ height: 50, width: 50, }} />
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
