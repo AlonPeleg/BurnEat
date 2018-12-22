@@ -29,13 +29,14 @@ export default class App extends React.Component {
         console.log(redirectUrl)
         let result = await AuthSession.startAsync({
             authUrl:
-                'https://accounts.spotify.com/authorize' +
-                '?response_type=code' +
+                'https://accounts.spotify.com/authorize?response_type=code' +
                 '&client_id=' + clientID +
                 (scopes ? '&scope=' + encodeURIComponent(scopes) : '') +
-                '&redirect_uri=' + encodeURIComponent(redirectUrl),
+                '&redirect_uri=' + encodeURIComponent("redirectUrl"),
         });
+        console.log(redirectUrl)
         this.setState({ result });
+   
     };
 }
 

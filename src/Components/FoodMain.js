@@ -7,6 +7,8 @@ var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/';
 var foodFlag;
 
+const plate = []
+
 export default class FoodMain extends Component {
     componentDidMount() {
         foodFlag = 0;
@@ -38,16 +40,18 @@ export default class FoodMain extends Component {
             myTDEE: 0,
             myBMR: 0,
             progressColor: 'grey',
-            plateSumCalorie: 0
+            plateSumCalorie: 0,
+            ChosenFood: []
 
         };
     };
     foodPressed = (e) => {
+        plate.push(e)
         let plateSum = this.state.plateSumCalorie;
         let currentPlate = this.state.myProgress;
         plateSum += e.Food_Calorie;
         currentPlate += (e.Food_Calorie / this.state.myTDEE);
-        console.log(currentPlate)
+        this.setState({ChosenFood:plate})
         if (currentPlate !== 0) {
             this.setState({ progressColor: '#d84621' })
         }
@@ -117,6 +121,7 @@ export default class FoodMain extends Component {
 
     render() {
 
+       
         return (
             <View style={{ flex: 1, }}>
                 <View>
@@ -142,10 +147,12 @@ export default class FoodMain extends Component {
                         <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10 }} />
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={{ color: 'red', fontSize: 20 }}>הצלחת שלי</Text>
-                        </View>
-                        <ProgressBarAndroid
+                       
+                        <TouchableOpacity style={{ alignItems: 'center' }} onPress={() => {this.props.navigation.navigate("plate",{plate:this.state.ChosenFood})}} >
+                        <Text  style={{ color: 'red', fontSize: 20 }}>לצלחת שלי</Text>
+                        </TouchableOpacity >
+
+                         <ProgressBarAndroid
                             styleAttr="Horizontal"
                             indeterminate={false}
                             progress={this.state.myProgress}
@@ -153,7 +160,8 @@ export default class FoodMain extends Component {
                         />
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
                             <Text>{this.state.plateSumCalorie}    /    {this.state.myTDEE}</Text>
-                        </View>
+                        </View> 
+
                     </View>
                 </View>
                 <TouchableOpacity

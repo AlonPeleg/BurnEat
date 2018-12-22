@@ -17,6 +17,7 @@
     "react-native-events": "^1.0.10",
     "react-native-on-layout": "^2.0.2",
     "react-native-pedometer": "0.0.7",
+    "react-native-snippets": "^1.0.0",
     "react-native-vector-icons": "^4.6.0",
     "react-native-wheel-picker-android": "^1.1.2",
     "react-navigation": "^2.11.2"

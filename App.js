@@ -12,6 +12,7 @@ import OpeningPage from './src/Components/OpeningPage';
 import ProfilePage from './src/Components/ProfilePage';
 import StepCount from './src/Components/StepCount';
 import Fitness from './src/Components/Fitness';
+import MyPlate from './src/Components/MyPlate';
 
 const StackNav = createStackNavigator(
   {
@@ -28,7 +29,8 @@ const SwitchNav = createSwitchNavigator(
     profile: ProfilePage,
     HomePageEnter: StackNav,
     steps: StepCount,
-    Fitness: Fitness
+    Fitness: Fitness,
+    plate:MyPlate
   }
 )
 export default class App extends React.Component {
