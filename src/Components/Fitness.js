@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, ProgressBarAndroid, AsyncStorage, Alert, ToastAndroid } from 'react-native';
+import { View, Text, TouchableOpacity, Dimensions, Image, Modal, StatusBar, FlatList, AsyncStorage, ToastAndroid } from 'react-native';
 import axios from 'axios';
+import { Card, CardItem, Body } from 'native-base';
 
 
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var workoutImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/WorkoutImages/';
 var timerInterval;
-var stretchCounter;
-var exerciseCounter;
 var userId;
 var rTimerInterval;
 var defTimer;
@@ -15,30 +14,15 @@ var defTimer;
 
 export default class Fitness extends Component {
     async componentWillMount() {
-        this.setState({ defualtTimer: 30 })
-        stretchCounter = this.props.navigation.state.params.currentStretch;
-        exerciseCounter = this.props.navigation.state.params.currentExc;
+        this.setState({ defualtTimer: 30 });
         StatusBar.setHidden(true);
         await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
-        await AsyncStorage.getItem(userId).then(v => {
-            console.log(v)
-            if (v) {
-                if (JSON.parse(v).stretchs) {
-                    stretchCounter = parseInt(JSON.parse(v).stretchs);
-                } else {
-                    stretchCounter = 0;
-                }
-                if (JSON.parse(v).exercise) {
-                    exerciseCounter = parseInt(JSON.parse(v).exercise);
-                } else {
-                    exerciseCounter = 0;
-                }
-            }
-            else {
-                stretchCounter = 0
-                exerciseCounter = 0;
-            }
-        });
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+            em: userId
+        }).then((v) => this.setState({
+            dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+            , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+        }))
 
     }
 
@@ -47,8 +31,10 @@ export default class Fitness extends Component {
         this.state = {
             modalVisible: false,
             workoutList: [],
+            myDailyList: [],
             currentImage: '',
             modalVisibleImage: false,
+            dailyModalVisible: false,
             timerTime: 0,
             repsTime: 0,
             tmpTime: 0,
@@ -58,6 +44,12 @@ export default class Fitness extends Component {
             timerOn: false,
             regTimerFlag: false,
             defualtTimer: 30,
+            currentExeNameChosen: '',
+            dailyExercises: 0,
+            totalExercises: 0,
+            checked: null,
+            dailyExName: '',
+            dailyExImg: '',
         };
     };
     finishExercise = () => {
@@ -88,12 +80,26 @@ export default class Fitness extends Component {
                 ToastAndroid.CENTER,
             );
         }
-        exerciseCounter++;
-        let currentStr = 0;
-        AsyncStorage.getItem(userId).then((v) => { currentStr = JSON.parse(v).stretchs })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+            exName: this.state.currentExeNameChosen
+        })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+            em: userId
+        })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+            uEmail: userId,
+            exName: this.state.dailyExName,
+            exImg: this.state.dailyExImg
+        })
         setTimeout(() => {
-            AsyncStorage.setItem(userId, JSON.stringify({ stretchs: currentStr, exercise: exerciseCounter.toString() }));
-        }, 1000);
+            axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                em: userId
+            }).then((v) => this.setState({
+                dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+            }))
+        }, 500);
+
 
     }
     regularTimer = () => {
@@ -109,6 +115,25 @@ export default class Fitness extends Component {
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER,
                 );
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+                    exName: this.state.currentExeNameChosen
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+                    em: userId
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+                    uEmail: userId,
+                    exName: this.state.dailyExName,
+                    exImg: this.state.dailyExImg
+                })
+                setTimeout(() => {
+                    axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                        em: userId
+                    }).then((v) => this.setState({
+                        dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                        , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+                    }))
+                }, 500);
             }
         }, 1000);
     }
@@ -123,20 +148,31 @@ export default class Fitness extends Component {
             this.setState({ timerTime: timer-- })
             if (this.state.timerTime === 0) {
                 clearInterval(timerInterval);
-                this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false })
-                stretchCounter++;
+                this.setState({ timerTime: this.state.tmpTime, timerStartFlag: false });
                 ToastAndroid.showWithGravity(
                     'מתיחה בוצעה בהצלחה',
                     ToastAndroid.SHORT,
                     ToastAndroid.CENTER,
                 );
-                let currentExercise = 0;
-                AsyncStorage.getItem(userId).then((v) => { currentExercise = JSON.parse(v).exercise })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
+                    exName: this.state.currentExeNameChosen
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
+                    em: userId
+                })
+                axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToDailyExercises', {
+                    uEmail: userId,
+                    exName: this.state.dailyExName,
+                    exImg: this.state.dailyExImg
+                })
                 setTimeout(() => {
-                    AsyncStorage.setItem(userId, JSON.stringify({ stretchs: stretchCounter.toString(), exercise: currentExercise }));
-                }, 1000);
-
-
+                    axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetUserExercises', {
+                        em: userId
+                    }).then((v) => this.setState({
+                        dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
+                        , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
+                    }))
+                }, 500);
             }
         }, 1000);
 
@@ -166,7 +202,10 @@ export default class Fitness extends Component {
                                     modalVisibleImage: true,
                                     currentImage: workoutImages + item.Exercise_Img + '.jpg',
                                     timerTime: parseInt(item.Exercise_Reps.split(':')[1]),
-                                    strExcFlag: true
+                                    strExcFlag: true,
+                                    currentExeNameChosen: item.Exercise_Name,
+                                    dailyExName: item.Exercise_Name,
+                                    dailyExImg: item.Exercise_Img
                                 }) :
 
                                 this.setState({
@@ -174,9 +213,11 @@ export default class Fitness extends Component {
                                     modalVisibleImage: true,
                                     currentImage: workoutImages + item.Exercise_Img + '.gif',
                                     strExcFlag: false,
-                                    repsTime: item.Exercise_Reps
-                                })
-
+                                    repsTime: item.Exercise_Reps,
+                                    currentExeNameChosen: item.Exercise_Name,
+                                    dailyExName: item.Exercise_Name,
+                                    dailyExImg: item.Exercise_Img
+                                });
                         }}>
                             <View style={styles.fetchViewStyle}>
                                 <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 90, width: '50%', marginLeft: 3 }}></Image>
@@ -184,6 +225,9 @@ export default class Fitness extends Component {
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 14, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
                                 </View>
+                                {item.f === 1 ?
+                                    <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 20, height: 20, width: 20, }} />
+                                    : null}
                             </View>
                         </TouchableOpacity>
 
@@ -211,7 +255,49 @@ export default class Fitness extends Component {
             ToastAndroid.CENTER,
         );
     }
+    myDailyExercises = () => {
 
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetDailyExercises', {
+            em: userId
+        }).then((v) => {
+            let data = JSON.parse(v.data.d)
+
+            const list = <FlatList
+                data={data}
+                keyExtractor={(exercise, index) => index.toString()}
+                renderItem={({ item, index }) => {
+
+
+                    return (
+                        <View style={{ borderWidth: 4, borderColor: 'rgba(221,221,221,0.9)', borderRadius: 5 }}>
+                            <CardItem>
+                                <Body>
+                                    <View key={index} style={{ flexDirection: 'row' }}>
+                                        <Image source={{ uri: workoutImages + item.Exercise_Img + '.jpg' }} style={{ height: 80, width: 150, marginHorizontal: 5 }} />
+                                        <View style={{ justifyContent: 'center', alignItems: 'center', padding: 3, marginLeft: 10 }}>
+                                            <Text style={{ textAlign: 'center' }}>{item.Exercise_Name}</Text>
+                                        </View>
+                                        <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 32, height: 20, width: 20, left: WIDTH - 60 }} />
+                                    </View>
+                                </Body>
+                            </CardItem>
+                        </View>
+
+
+                    );
+                }}
+            />
+            this.setState({ myDailyList: list });
+
+        });
+        setTimeout(() => {
+            this.setState({ dailyModalVisible: true });
+            return
+        }, 500);
+    }
+    resetDailyPressed = () => {
+
+    }
     render() {
 
         return (
@@ -232,19 +318,18 @@ export default class Fitness extends Component {
                     <TouchableOpacity onPress={this.questionPressed}>
                         <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10, marginTop: 2 }} />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={this.resetDailyPressed} style={{ position: 'absolute', top: HEIGHT - 172, left: WIDTH - 50 }}>
+                        <Image source={{ uri: siteImages + 'resetWorkout.png' }} style={{ height: 50, width: 50, }} />
+                    </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
+                            <TouchableOpacity onPress={this.myDailyExercises}>
+                                <Text style={{ color: 'red', fontSize: 20 }}>האימונים שלי</Text>
+                            </TouchableOpacity>
                         </View>
-                        <ProgressBarAndroid
-                            styleAttr="Horizontal"
-                            indeterminate={false}
-                            progress={this.state.myProgress}
-                            color={this.state.progressColor}
-                        />
                         <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-                            <Text>{stretchCounter} מתיחות שבוצעו</Text>
-                            <Text>{exerciseCounter} אימונים שבוצעו</Text>
+                            <Text>{this.state.dailyExercises} אימונים שבוצעו היום</Text>
+                            <Text>{this.state.totalExercises} אימונים שבוצעו בכללי</Text>
                         </View>
                     </View>
                 </View>
@@ -356,6 +441,25 @@ export default class Fitness extends Component {
                             </View>
                         </TouchableOpacity>
                     </View>
+                </Modal>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.dailyModalVisible}
+                    onRequestClose={() => null}
+                    style={styles.modalStyle}
+
+                >
+                    {this.state.myDailyList}
+                    <TouchableOpacity
+                        onPress={() => this.setState({ dailyModalVisible: false, })}
+                    >
+                        <View style={{ width: WIDTH, backgroundColor: "#54a9a3", height: 50, justifyContent: 'center' }}>
+                            <Text style={{ fontSize: 20, color: "white", textAlign: 'center', zIndex: 1 }}>
+                                סגור
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
                 </Modal>
             </View >
         )

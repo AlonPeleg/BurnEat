@@ -163,7 +163,7 @@ export default class App extends Component {
                 >
                     <Text>Back</Text>
                 </TouchableOpacity>
-                <View style={{ position: 'absolute', top: HEIGHT - 170, width: 300, height: 300, }}>
+                <View style={{ position: 'absolute', top: HEIGHT - 180, width: 300, height: 300, }}>
                     <VerifySpotify />
                 </View>
             </View>
