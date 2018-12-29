@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet,TouchableOpacity,Image,Dimensions } from 'react-native';
 
 
-
+var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 
 class MyPlate extends Component {
  
@@ -19,17 +19,23 @@ class MyPlate extends Component {
 
         return (
             <View style={styles.container}>
-                {  Plate.map((Item)=>{
-            return <Text>{Item.Food_Name} </Text>
+            <Image source={{uri: siteImages + "Plate.jpg"}} style={{height:HEIGHT,width:WIDTH,position:"absolute"}}/>
+            <View>
+            {  Plate.map((Item)=>{
+            return <Text style={{color:"white"}}>{Item.Food_Name} </Text>
             })}
-                 
+            </View>
                 <TouchableOpacity onPress={() => { this.props.navigation.navigate("foodMainPage")}}>
-                        <Text>לך אחורה </Text>
+                        <Text style={{color:"Red",fontSize:15}}>לך אחורה </Text>
                 </TouchableOpacity >
             </View>
         );
-    }
+    }6
 }
+
+const WIDTH = Dimensions.get('window').width;
+const HEIGHT = Dimensions.get('window').height;
+
 
 const styles = StyleSheet.create({
     container: {
