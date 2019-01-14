@@ -18,7 +18,7 @@ export default class plate extends Component {
         super(props)
 
         this.state = {
-            plateList: []
+            plateList:[]
         };
     };
 
