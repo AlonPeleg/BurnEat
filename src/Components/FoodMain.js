@@ -8,7 +8,7 @@ var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/
 var foodFlag;
 var userId;
 
-export default class FoodMain extends Component {
+export default class FoodMain extends Component  {
     componentDidMount() {
         foodFlag = 0;
         AsyncStorage.getItem("user").then((v) => {

@@ -75,7 +75,7 @@ export default class App extends Component {
                     }
                 }
             },
-            error => alert(error.message),
+            error => alert(error.message) ,
             { enableHighAccuracy: true, }
         );
     }

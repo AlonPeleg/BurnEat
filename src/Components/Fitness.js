@@ -476,7 +476,7 @@ export default class Fitness extends Component {
 
 }
 
-const WIDTH = Dimensions.get("window").width;
+const WIDTH = Dimensions.get("window").width ;
 const HEIGHT = Dimensions.get("window").height;
 
 const styles = {
