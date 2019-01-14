@@ -10,6 +10,7 @@ var timerInterval;
 var userId;
 var rTimerInterval;
 var defTimer;
+var noModal=0;
 
 
 export default class Fitness extends Component {
@@ -23,7 +24,6 @@ export default class Fitness extends Component {
             dailyExercises: JSON.parse(v.data.d)[0].User_Daily_Exercises
             , totalExercises: JSON.parse(v.data.d)[0].User_Sum_Exercises
         }))
-
     }
 
     constructor(props) {
@@ -225,9 +225,6 @@ export default class Fitness extends Component {
                                     <Text style={{ fontSize: 14, marginBottom: 15, marginTop: 10 }}>{item.Exercise_Name}</Text>
                                     <Text style={{ fontSize: 14, textAlign: 'center' }}>{item.Exercise_Reps}</Text>
                                 </View>
-                                {item.f === 1 ?
-                                    <Image source={{ uri: siteImages + 'finishWorkoutV.png' }} style={{ position: 'absolute', top: 20, height: 20, width: 20, }} />
-                                    : null}
                             </View>
                         </TouchableOpacity>
 
@@ -288,15 +285,27 @@ export default class Fitness extends Component {
                 }}
             />
             this.setState({ myDailyList: list });
+            noModal=0;
 
+        }).catch(() => {
+            ToastAndroid.showWithGravity(
+                'לא נמצאו אימונים יומיים',
+                ToastAndroid.LONG,
+                ToastAndroid.CENTER,
+            );
+            noModal = 1;
         });
         setTimeout(() => {
-            this.setState({ dailyModalVisible: true });
-            return
+            if (noModal === 1) {
+                return;
+            } else {
+                this.setState({ dailyModalVisible: true });
+                return
+            }
         }, 500);
     }
     resetDailyPressed = () => {
-
+        console.log('coming soon')
     }
     render() {
 

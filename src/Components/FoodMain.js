@@ -6,6 +6,7 @@ import axios from 'axios';
 var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/';
 var foodFlag;
+var userId;
 
 export default class FoodMain extends Component {
     componentDidMount() {
@@ -143,7 +144,9 @@ export default class FoodMain extends Component {
                     </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={{ color: 'red', fontSize: 20 }}>הצלחת שלי</Text>
+                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('myPlate')}>
+                                <Text style={{ color: 'red', fontSize: 20 }}>הצלחת שלי</Text>
+                            </TouchableOpacity>
                         </View>
                         <ProgressBarAndroid
                             styleAttr="Horizontal"

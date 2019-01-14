@@ -53,20 +53,23 @@ export default class App extends Component {
                 }
 
                 else {
-                    if (this.state.prevCoorSum - this.state.currCoorSum >= 0.00006 || this.state.prevCoorSum - this.state.currCoorSum <= -0.00006) {
+                    if (this.state.prevCoorSum - this.state.currCoorSum >= 0.0001 || this.state.prevCoorSum - this.state.currCoorSum <= -0.0001) {
                         console.log(this.state.prevCoorSum - this.state.currCoorSum);
                         if (flag === 1) {
                             this.setState({ lat1: coords.latitude, lon1: coords.longitude });
                             flag = 0;
+                            checkFlag = 0;
                             this.getDistanceFromLatLonInKm(coords.latitude, coords.longitude, this.state.lat2, this.state.lon2);
                         }
                         else if (flag === 2) {
                             this.setState({ lat1: coords.latitude, lon1: coords.longitude, lat2: coords.latitude, lon2: coords.longitude });
                             flag = 0;
+                            checkFlag = 0;
                         }
                         else {
                             this.setState({ lat2: coords.latitude, lon2: coords.longitude });
                             flag = 1;
+                            checkFlag = 0;
                             this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, coords.latitude, coords.longitude);
                         }
                     }
@@ -105,7 +108,7 @@ export default class App extends Component {
         this.getCurrentLocation();
         walkInterval = setInterval(() => {
             this.getCurrentLocation();
-        }, 10000);
+        }, 1000);
     }
 
     stopPressed = () => {
