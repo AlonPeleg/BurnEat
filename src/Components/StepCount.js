@@ -27,16 +27,16 @@ export default class App extends Component {
         walk: "Walking.png",
         prevCoorSum: 0,
         currCoorSum: 0,
-        date:"",
-        month:""
+        date: "",
+        month: "",
 
     };
 
     componentWillMount() {
         var date = new Date().getDate(); //Current Date
         var month = new Date().getMonth() + 1; //Current Month 
-this.setState({date:date});
-this.setState({month:month});
+        this.setState({ date: date });
+        this.setState({ month: month });
         if (Platform.OS === 'android' && !Constants.isDevice) {
             this.setState({
                 errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
@@ -81,7 +81,7 @@ this.setState({month:month});
                     }
                 }
             },
-            error => alert(error.message) ,
+            error => alert(error.message),
             { enableHighAccuracy: true, }
         );
     }
@@ -137,41 +137,41 @@ this.setState({month:month});
     }
 
     render() {
-        
+
         return (
             <View style={styles.container}>
-            <View style={styles.dateStyle} >
-            <Text style={{fontSize:50,color:"#3d9985"}}>
-            {this.state.date}\{this.state.month}
-            </Text>
-           
-            </View>
-            <View style={styles.lineStyle} />
-            <View style={{ flexDirection: 'row',top:10,margin:5}}>
-                <View style={{ flexDirection: 'row',left:0 }}>
-                    <Text style={styles.paragraph}>{this.state.mySteps.toFixed(0)}</Text>
-                    <Image source={{ uri: siteImages + 'stepsIcon2.png' }} style={{ width: 50, height: 50 }} />
+                <View style={styles.dateStyle} >
+                    <Text style={{ fontSize: 50, color: "#3d9985" }}>
+                        {this.state.date}\{this.state.month}
+                    </Text>
+
                 </View>
-                <View style={{ flexDirection: 'row',right:0 }}>
-                    <Text style={styles.paragraph}>{this.state.sumCounter.toFixed(1)}{'\n'}</Text>
-                    <Image source={{ uri: siteImages + 'distanceIcon.png' }} style={{ width: 50, height: 50 }} />
+                <View style={styles.lineStyle} />
+                <View style={{ flexDirection: 'row', top: 10, margin: 5 }}>
+                    <View style={{ flexDirection: 'row', left: 0 }}>
+                        <Text style={styles.paragraph}>{this.state.mySteps.toFixed(0)}</Text>
+                        <Image source={{ uri: siteImages + 'stepsIcon2.png' }} style={{ width: 50, height: 50 }} />
+                    </View>
+                    <View style={{ flexDirection: 'row', right: 0 }}>
+                        <Text style={styles.paragraph}>{this.state.sumCounter.toFixed(1)}{'\n'}</Text>
+                        <Image source={{ uri: siteImages + 'distanceIcon.png' }} style={{ width: 50, height: 50 }} />
+                    </View>
                 </View>
-            </View>
-                <Image source={{ uri: siteImages + this.state.walk }} style={{  width: 200, height: 200,top:200,position:"absolute"}} />
+                <Image source={{ uri: siteImages + this.state.walk }} style={{ width: 200, height: 200, top: 200, position: "absolute" }} />
                 <TouchableOpacity style={styles.btnStyle}
                     onPress={this.startPressed}
                 >
-                    <Text >Start</Text>
+                    <Text >התחל</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnStyle}
                     onPress={this.stopPressed}
                 >
-                    <Text>Stop</Text>
+                    <Text>עצור</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.btnStyle}
                     onPress={this.stepReset}
                 >
-                    <Text>Reset counter!</Text>
+                    <Text>אפס</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={() => {
@@ -180,9 +180,9 @@ this.setState({month:month});
                     }}
                     style={styles.btnStyle}
                 >
-                    <Text>Back</Text>
+                    <Text>חזרה</Text>
                 </TouchableOpacity>
-                <View style={{ position: 'absolute', top: HEIGHT - 150, width: 300, height: 300, }}>
+                <View style={{ position: 'absolute', top: HEIGHT - 180, width: 300, height: 300, }}>
                     <VerifySpotify />
                 </View>
             </View>
@@ -209,26 +209,23 @@ const styles = {
         backgroundColor: '#3d9985',
         alignItems: 'center',
         justifyContent: 'center',
-        top:250,
-        borderWidth:0.5,
-        borderColor:"black",
-        borderRadius:5,
-        
-     
+        top: 250,
+        marginBottom: 1,
+
     },
-    dateStyle:{
+    dateStyle: {
         width: 355,
         height: 80,
         backgroundColor: '#ecf0f1',
         alignItems: 'center',
         justifyContent: 'center',
-        top:5,  
+        top: 5,
     },
-    lineStyle:{
-        width:360,
-        height:3,
-        margin:5,
-        backgroundColor:'#3d9985'
-       
-   }
+    lineStyle: {
+        width: 360,
+        height: 3,
+        margin: 5,
+        backgroundColor: '#3d9985'
+
+    }
 };
