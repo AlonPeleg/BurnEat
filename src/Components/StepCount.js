@@ -54,30 +54,21 @@ export default class App extends Component {
                 const coords = { latitude: position.coords.latitude, longitude: position.coords.longitude }
                 this.setState({ currCoorSum: parseFloat(coords.longitude) + parseFloat(coords.latitude) })
                 if (checkFlag === 0) {
-                    this.setState({ prevCoorSum: parseFloat(coords.longitude) + parseFloat(coords.latitude) })
+                    this.setState({ lat1: coords.latitude, lat2: coords.latitude, lon1: coords.longitude, lon2: coords.longitude });
                     checkFlag = 1;
-                }
-
-                else {
-                    if (this.state.prevCoorSum - this.state.currCoorSum >= 0.0001 || this.state.prevCoorSum - this.state.currCoorSum <= -0.0001) {
-                        console.log(this.state.prevCoorSum - this.state.currCoorSum);
-                        if (flag === 1) {
-                            this.setState({ lat1: coords.latitude, lon1: coords.longitude });
-                            flag = 0;
-                            checkFlag = 0;
-                            this.getDistanceFromLatLonInKm(coords.latitude, coords.longitude, this.state.lat2, this.state.lon2);
-                        }
-                        else if (flag === 2) {
-                            this.setState({ lat1: coords.latitude, lon1: coords.longitude, lat2: coords.latitude, lon2: coords.longitude });
-                            flag = 0;
-                            checkFlag = 0;
-                        }
-                        else {
-                            this.setState({ lat2: coords.latitude, lon2: coords.longitude });
-                            flag = 1;
-                            checkFlag = 0;
-                            this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, coords.latitude, coords.longitude);
-                        }
+                } else if (checkFlag === 1) {
+                    this.setState({ lat2: coords.latitude, lon2: coords.longitude });
+                    console.log(this.state.currCoorSum - (parseFloat(this.state.lon1) + parseFloat(this.state.lat1)))
+                    if (this.state.currCoorSum - (parseFloat(this.state.lon1) + parseFloat(this.state.lat1)) >= 0.0001 || this.state.currCoorSum - (parseFloat(this.state.lon1) + parseFloat(this.state.lat1)) <= -0.0001) {
+                        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                    }
+                    checkFlag = 2;
+                } else if (checkFlag === 2) {
+                    this.setState({ lat1: coords.latitude, lon1: coords.longitude });
+                    console.log(this.state.currCoorSum - (parseFloat(this.state.lon2) + parseFloat(this.state.lat2)))
+                    if (this.state.currCoorSum - (parseFloat(this.state.lon2) + parseFloat(this.state.lat2)) >= 0.0001 || this.state.currCoorSum - (parseFloat(this.state.lon2) + parseFloat(this.state.lat2)) <= -0.0001) {
+                        this.getDistanceFromLatLonInKm(this.state.lat1, this.state.lon1, this.state.lat2, this.state.lon2);
+                        checkFlag = 1;
                     }
                 }
             },
@@ -114,25 +105,24 @@ export default class App extends Component {
         this.getCurrentLocation();
         walkInterval = setInterval(() => {
             this.getCurrentLocation();
-        }, 1000);
+        }, 2000);
     }
 
     stopPressed = () => {
         clearInterval(walkInterval);
-        flag = 2;
+        checkFlag=0;
         alert("you walked " + sumCount.toFixed(0) + " meters\nequal to " + steps.toFixed(0) + " steps");
         this.setState({ walk: 'Walking.png' })
         ToastAndroid.showWithGravity(
             'צעד הוא 0.762 מטרים',
             ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM
+            ToastAndroid.CENTER
         );
-        checkFlag = 0;
     }
     stepReset = () => {
         steps = 0;
         sumCount = 0;
-        flag = 3;
+        checkFlag=0;
         this.setState({ mySteps: 0, sumCounter: 0 })
     }
 
