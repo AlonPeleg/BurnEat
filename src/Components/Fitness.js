@@ -10,7 +10,7 @@ var timerInterval;
 var userId;
 var rTimerInterval;
 var defTimer;
-var noModal=0;
+var noModal = 0;
 
 
 export default class Fitness extends Component {
@@ -80,7 +80,7 @@ export default class Fitness extends Component {
                 ToastAndroid.CENTER,
             );
         }
-          
+
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
             em: userId
         })
@@ -283,7 +283,7 @@ export default class Fitness extends Component {
                 }}
             />
             this.setState({ myDailyList: list });
-            noModal=0;
+            noModal = 0;
 
         }).catch(() => {
             ToastAndroid.showWithGravity(
@@ -303,7 +303,10 @@ export default class Fitness extends Component {
         }, 500);
     }
     resetDailyPressed = () => {
-        console.log('coming soon')
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDailyReset', {
+            em: userId
+        })
+        this.setState({ dailyExercises: 0 })
     }
     render() {
 
@@ -474,7 +477,7 @@ export default class Fitness extends Component {
 
 }
 
-const WIDTH = Dimensions.get("window").width ;
+const WIDTH = Dimensions.get("window").width;
 const HEIGHT = Dimensions.get("window").height;
 
 const styles = {

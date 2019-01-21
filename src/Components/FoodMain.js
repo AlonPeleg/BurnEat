@@ -7,9 +7,10 @@ var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var foodImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/FoodImages/';
 var foodFlag;
 var userId;
+var currentPlate;
 
-export default class FoodMain extends Component  {
-   async componentDidMount() {
+export default class FoodMain extends Component {
+    async componentDidMount() {
         foodFlag = 0;
         await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
         AsyncStorage.getItem("user").then((v) => {
@@ -26,6 +27,10 @@ export default class FoodMain extends Component  {
                 sex: JSON.parse(v).Sex,
                 age: JSON.parse(v).Age,
             }).then((v) => { this.setState({ myBMR: v.data.d }) });
+            axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/getDailyCalorie', {
+                em: userId
+            }).then((v) => { this.setState({ plateSumCalorie: parseInt(JSON.parse(v.data.d)[0].User_Calorie), myProgress: (parseInt(JSON.parse(v.data.d)[0].User_Calorie) / this.state.myTDEE) }) })
+
         });
         StatusBar.setHidden(true);
 
@@ -47,6 +52,7 @@ export default class FoodMain extends Component  {
     foodPressed = (e) => {
         let plateSum = this.state.plateSumCalorie;
         let currentPlate = this.state.myProgress;
+        currentPlate = (this.state.plateSumCalorie / this.state.myTDEE)
         plateSum += e.Food_Calorie;
         currentPlate += (e.Food_Calorie / this.state.myTDEE);
         console.log(currentPlate)
@@ -70,11 +76,18 @@ export default class FoodMain extends Component  {
             foodFlag = 1;
         }
         this.setState({ myProgress: currentPlate, plateSumCalorie: plateSum })
-        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToPlate',{
-            uEmail:userId,
-            foodName:e.Food_Name,
-            foodImg:e.Food_Img_Url
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToPlate', {
+            uEmail: userId,
+            foodName: e.Food_Name,
+            foodImg: e.Food_Img_Url
         })
+        setTimeout(() => {
+            axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/updatePlateSum', {
+                em: userId,
+                newSum: this.state.plateSumCalorie
+            })
+        }, 500);
+
     }
     foodTypePressed = (e) => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
@@ -121,6 +134,27 @@ export default class FoodMain extends Component  {
             ToastAndroid.CENTER,
         );
     }
+    resetDailyPressed = () => {
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/FoodDailyReset', {
+            em: userId
+        })
+        this.setState({ plateSumCalorie: 0, myProgress: 0.0 })
+    }
+    myPlatePressed=()=>{
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/getDailyCalorie',{
+            em:userId
+        }).then((v)=>{
+            if(parseInt(JSON.parse(v.data.d)[0].User_Calorie)===0){
+                ToastAndroid.showWithGravity(
+                    'הצלחת ריקה',
+                    ToastAndroid.LONG,
+                    ToastAndroid.CENTER,
+                );
+            }else{
+                this.props.navigation.navigate('myPlate')
+            }
+        })
+    }
 
     render() {
 
@@ -148,9 +182,12 @@ export default class FoodMain extends Component  {
                     <TouchableOpacity onPress={this.questionPressed}>
                         <Image source={{ uri: siteImages + 'questionMark.png' }} style={{ height: 17, width: 17, marginLeft: 10 }} />
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={this.resetDailyPressed} style={{ position: 'absolute', top: HEIGHT - 183, left: WIDTH - 50 }}>
+                        <Image source={{ uri: siteImages + 'resetWorkout.png' }} style={{ height: 50, width: 50, }} />
+                    </TouchableOpacity>
                     <View style={styles.myPlate}>
                         <View style={{ alignItems: 'center' }}>
-                            <TouchableOpacity onPress={()=>this.props.navigation.navigate('myPlate')}>
+                            <TouchableOpacity onPress={this.myPlatePressed }>
                                 <Text style={{ color: 'red', fontSize: 20 }}>הצלחת שלי</Text>
                             </TouchableOpacity>
                         </View>
