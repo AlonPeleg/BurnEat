@@ -9,7 +9,9 @@ var siteImages = 'http://ruppinmobile.tempdomain.co.il/site07/Images/';
 var showSpotifyImg = true;
 
 export default class App extends React.Component {
-
+    componentWillMount() {
+        showSpotifyImg = true;
+    }
     state = {
         result: null,
     };
