@@ -80,9 +80,7 @@ export default class Fitness extends Component {
                 ToastAndroid.CENTER,
             );
         }
-        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/WorkoutDone', {
-            exName: this.state.currentExeNameChosen
-        })
+          
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/UpdateSumExercise', {
             em: userId
         })

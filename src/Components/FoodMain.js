@@ -9,8 +9,9 @@ var foodFlag;
 var userId;
 
 export default class FoodMain extends Component  {
-    componentDidMount() {
+   async componentDidMount() {
         foodFlag = 0;
+        await AsyncStorage.getItem("user").then(v => userId = JSON.parse(v).Email);
         AsyncStorage.getItem("user").then((v) => {
             axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/TDEECalc', {
                 height: JSON.parse(v).Height,
@@ -69,6 +70,11 @@ export default class FoodMain extends Component  {
             foodFlag = 1;
         }
         this.setState({ myProgress: currentPlate, plateSumCalorie: plateSum })
+        axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/InsertToPlate',{
+            uEmail:userId,
+            foodName:e.Food_Name,
+            foodImg:e.Food_Img_Url
+        })
     }
     foodTypePressed = (e) => {
         axios.post('http://ruppinmobile.tempdomain.co.il/site07/webservice.asmx/GetFoodList', {
